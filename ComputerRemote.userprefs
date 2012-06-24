@@ -1,0 +1,25 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="ComputerRemote/Lib/Server.cs">
+    <Files>
+      <File FileName="ComputerRemote/Main.cs" Line="17" Column="1" />
+      <File FileName="ComputerRemote/ServerWindow.cs" Line="15" Column="1" />
+      <File FileName="ComputerRemote/Lib/Server.cs" Line="22" Column="42" />
+      <File FileName="ComputerRemote/Lib/ComputerRemote.cs" Line="13" Column="2" />
+      <File FileName="ComputerRemote/Lib/Client.cs" Line="13" Column="3" />
+      <File FileName="ComputerRemote/Lib/Packets/Packet.cs" Line="274" Column="3" />
+      <File FileName="ComputerRemote/Lib/Packets/PacketId.cs" Line="15" Column="16" />
+      <File FileName="ComputerRemote/Lib/Packets/PacketLogin.cs" Line="33" Column="56" />
+      <File FileName="ComputerRemote/Lib/Packets/PacketPing.cs" Line="9" Column="4" />
+      <File FileName="ComputerRemote/Lib/Packets/PacketMessage.cs" Line="13" Column="1" />
+      <File FileName="ComputerRemote/Lib/Packets/PacketCommand.cs" Line="5" Column="33" />
+      <File FileName="ComputerRemote/Lib/Packets/PacketKick.cs" Line="5" Column="32" />
+      <File FileName="ComputerRemote/Lib/Packets/PacketHandShake.cs" Line="5" Column="36" />
+      <File FileName="ComputerRemote/Lib/Packets/PacketInvalid.cs" Line="10" Column="3" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
