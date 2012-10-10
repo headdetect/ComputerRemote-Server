@@ -82,7 +82,7 @@ namespace ComputerRemote.CLI.Utils {
             mem_writer = new StreamWriter( mem_buffer );
             FileUtils.CreateDirIfNotExist( FileUtils.LogsPath );
             _lastTime = DateTime.Now;
-            FileUtils.CreateFileIfNotExist( FileUtils.LogsPath + CurrentLogFile, "--MCForge: Version: " + Assembly.GetExecutingAssembly().GetName().Version + ", OS:" + Environment.OSVersion + ", ARCH:" + ( Environment.Is64BitOperatingSystem ? "x64" : "x86" ) + ", CULTURE: " + CultureInfo.CurrentCulture + Environment.NewLine );
+            FileUtils.CreateFileIfNotExist( FileUtils.LogsPath + CurrentLogFile, "--Remote: Version: " + Assembly.GetExecutingAssembly().GetName().Version + ", OS:" + Environment.OSVersion + ", ARCH:" + ( Environment.Is64BitOperatingSystem ? "x64" : "x86" ) + ", CULTURE: " + CultureInfo.CurrentCulture + Environment.NewLine );
 
             _workerThread = new Thread( Flush );
             _workerThread.Start();
