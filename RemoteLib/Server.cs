@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Net;
-using ComputerRemote.Utils;
 using System.Net.NetworkInformation;
+using ComputerRemote.IO;
 
 namespace ComputerRemote {
     public class Server {
@@ -34,7 +34,7 @@ namespace ComputerRemote {
         /// </summary>
         public void Stop ( ) {
             _shuttingDown = true;
-            Logger.Log( "Stopping Server" );
+            ObjectOutput.Write( "Stopping Server" );
             mListener.Stop();
         }
 
@@ -46,20 +46,20 @@ namespace ComputerRemote {
             mListener.Start();
             mListener.BeginAcceptTcpClient( CallBack, null );
 
-            Logger.Log( "Server Started" );
+            ObjectOutput.Write( "Server Started" );
         }
 
         void CallBack ( IAsyncResult result ) {
 
             try {
-                Logger.Log( "Client connected" );
+                ObjectOutput.Write( "Client connected" );
                 Client client = new Client( mListener.EndAcceptTcpClient( result ) );
                 Clients.Add( client );
                 client.StartClient();
 
             }
             catch ( Exception e ) {
-                Logger.LogError( e );
+                ObjectOutput.Write( e );
             }
 
             if ( !_shuttingDown ) 
@@ -81,14 +81,14 @@ namespace ComputerRemote {
 
             mPingListener = new TcpListener( IPAddress.Any, 7 );
             mPingListener.Start();
-            Logger.Log( "Ping server started" );
+            ObjectOutput.Write( "Ping server started" );
             mPingListener.BeginAcceptTcpClient( onPinged, null );
 
         }
 
         void onPinged ( IAsyncResult rec ) {
             try {
-                Logger.Log( "Pinged" );
+                ObjectOutput.Write( "Pinged" );
                 TcpClient c = mPingListener.EndAcceptTcpClient( rec );
                 c.Close();
             }

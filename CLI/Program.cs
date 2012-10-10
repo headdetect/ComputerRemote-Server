@@ -2,12 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ComputerRemote;
-using ComputerRemote.Utils;
+using ComputerRemote.CLI.Utils;
 
-namespace CLI {
+namespace ComputerRemote.CLI {
     class Program {
         static void Main ( string[] args ) {
+
+            for ( int i = 0; i < args.Length; i++ ) {
+                if ( args[ i ].IndexOf( "--debug" ) != -1) {
+                    Paramaters.DebugEnabled = true;
+                }
+            }
             Logger.Init();
             Logger.OnRecieveLog += OnLog;
             Logger.OnRecieveErrorLog += OnError;
