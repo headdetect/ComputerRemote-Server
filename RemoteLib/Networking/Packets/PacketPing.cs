@@ -1,47 +1,20 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace ComputerRemote
-{
-	public class PacketPing : Packet
-	{
-		public PacketPing ()
-		{
-		}
+namespace ComputerRemote.Networking.Packets {
+    public class PacketPing : Packet {
 
-		#region implemented abstract members of ComputerRemote.Packet
-		public override PacketID PacketID {
-			get {
-				throw new NotImplementedException ();
-			}
-		}
+        public override byte PacketID { get { return 0x00; } }
 
-		public override int Length {
-			get {
-				throw new NotImplementedException ();
-			}
-		}
+        public override void ReadPacket ( Client c ) { }
 
-		public override byte[] Data {
-			get {
-				throw new NotImplementedException ();
-			}
-		}
+        public override void WritePacket ( Client c ) { }
 
-		public override void ReadPacket (byte[] data)
-		{
-			throw new NotImplementedException ();
-		}
 
-		public override void WritePacket (Client c)
-		{
-			throw new NotImplementedException ();
-		}
-
-		public override void HandlePacket (Client c)
-		{
-			throw new NotImplementedException ();
-		}
-		#endregion
-	}
+        public override byte[] DataWritten {
+            get { return new byte[ 0 ]; }
+        }
+    }
 }
-

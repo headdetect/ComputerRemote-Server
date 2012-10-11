@@ -45,20 +45,14 @@
     <Compile Include="ComputerRemote.cs" />
     <Compile Include="IO\Output.cs" />
     <Compile Include="Networking\Packet.cs" />
-    <Compile Include="Networking\Packets\PacketCommand.cs" />
-    <Compile Include="Networking\Packets\PacketGetInfo.cs" />
-    <Compile Include="Networking\Packets\PacketHandShake.cs" />
-    <Compile Include="Networking\PacketId.cs" />
-    <Compile Include="Networking\Packets\PacketInvalid.cs" />
-    <Compile Include="Networking\Packets\PacketKick.cs" />
-    <Compile Include="Networking\Packets\PacketLogin.cs" />
-    <Compile Include="Networking\Packets\PacketMessage.cs" />
-    <Compile Include="Networking\Packets\PacketPing.cs" />
     <Compile Include="Networking\PacketReader.cs" />
-    <Compile Include="Networking\Packets\PacketSendInfo.cs" />
+    <Compile Include="Networking\Packets\PacketDisconnect.cs" />
+    <Compile Include="Networking\Packets\PacketInit.cs" />
+    <Compile Include="Networking\Packets\PacketPing.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

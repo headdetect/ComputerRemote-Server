@@ -1,18 +1,42 @@
 using System;
 using System.Net.Sockets;
 using System.Collections.Generic;
-using RemoteLib.Packets;
 using System.Threading;
+using ComputerRemote.Networking;
 
 namespace ComputerRemote {
     public class Client {
 
+        /// <summary>
+        /// Gets or sets the client socket.
+        /// </summary>
+        /// <value>
+        /// The client socket.
+        /// </value>
         public TcpClient ClientSocket { get; set; }
 
+        /// <summary>
+        /// Gets or sets the Network stream.
+        /// </summary>
+        /// <value>
+        /// The Network stream.
+        /// </value>
         public NetworkStream NStream { get; set; }
 
+        /// <summary>
+        /// Gets or sets the packet queue.
+        /// </summary>
+        /// <value>
+        /// The packet queue.
+        /// </value>
         public Queue<Packet> PacketQueue { get; set; }
 
+        /// <summary>
+        /// Gets or sets the reader.
+        /// </summary>
+        /// <value>
+        /// The reader.
+        /// </value>
         public PacketReader Reader { get; set; }
 
 
@@ -21,6 +45,10 @@ namespace ComputerRemote {
         internal Thread WriterThread { get; set; }
 
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Client"/> class.
+        /// </summary>
+        /// <param name="client">The client.</param>
         public Client ( TcpClient client ) {
             ClientSocket = client;
             NStream = client.GetStream();
@@ -44,25 +72,20 @@ namespace ComputerRemote {
                 if ( PacketQueue.Count > 0 ) {
                     var p = PacketQueue.Dequeue();
                     p.WritePacket( this );
+
+                    NStream.WriteByte( p.PacketID );
+                    NStream.Write( p.DataWritten, 0, p.DataWritten.Length );
                     continue;
                 }
                 Thread.Sleep( 5 );
             }
         }
 
+
+
         /// <summary>
-        /// Handles the login.
+        /// Disconnects this instance from any open connections.
         /// </summary>
-        /// <param name="packet">The packet.</param>
-        internal void HandleLogin ( PacketLogin packet ) {
-
-        }
-
-        internal void HandleGetInfo ( PacketGetInfo packetGetInfo ) {
-            PacketQueue.Enqueue( new PacketSendInfo() );
-            Disconnect();
-        }
-
         public void Disconnect () {
             NStream.Close();
             ClientSocket.Close();
