@@ -263,7 +263,7 @@ namespace ComputerRemote.Networking {
 
             byte[] bytes = new byte[ len ];
             mStream.Read( bytes, start, len );
-            return Encoding.ASCII.GetString( bytes );
+            return Encoding.ASCII.GetString( bytes ).Trim();
         }
 
         /// <summary>

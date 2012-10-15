@@ -5,6 +5,7 @@ using System.Text;
 using ComputerRemote.CLI.Utils;
 using CLI.Packets;
 using ComputerRemote.Networking;
+using RemoteLib.Networking;
 
 namespace ComputerRemote.CLI {
     class Program {
@@ -16,7 +17,6 @@ namespace ComputerRemote.CLI {
             //Register packets
 
             Packet.RegisterPacket( typeof( PacketMessage ), 0x04 );
-            Packet.RegisterPacket( typeof( PacketInfoExchange ), 0x05 );
 
             //End register
 
@@ -25,16 +25,30 @@ namespace ComputerRemote.CLI {
 
 
             for ( int i = 0; i < args.Length; i++ ) {
-                if ( args[ i ].IndexOf( "--debug" ) != -1) {
+                if ( args[ i ].IndexOf( "--debug" ) != -1 ) {
                     Paramaters.DebugEnabled = true;
+                }
+                else if ( args[ i ].IndexOf( "--nocast" ) != -1 ) {
+                    Paramaters.Multicating = false;
                 }
             }
 
             Logger.Init();
             Logger.OnRecieveLog += OnLog;
             Logger.OnRecieveErrorLog += OnError;
-            var server = new Server();
+            Server server = new Server();
+            Packet.PacketRecieved += new EventHandler<Packet.PacketEventArgs>( Packet_PacketRecieved );
+            MultiCast cast = null;
+
             server.Start();
+            
+
+            if ( Paramaters.Multicating ) {
+                cast = new MultiCast();
+                cast.Start();
+
+                Logger.Log( "Casting server started" );
+            }
 
             while ( true ) {
                 string read = Console.ReadLine();
@@ -48,14 +62,26 @@ namespace ComputerRemote.CLI {
                     }
 
                     Console.SetCursorPosition( Console.CursorLeft, Console.CursorTop - 1 );
-                    Logger.Log(  "[ " + DateTime.Now.ToString("T") + " ] - " + read);
+                    Logger.Log( "[ " + DateTime.Now.ToString( "T" ) + " ] - " + read );
                 }
+            }
+
+            if ( cast != null ) {
+                cast.Stop();
             }
 
             server.Stop();
             Console.Clear();
-            Console.WriteLine("Press any key to close");
+            Console.WriteLine( "Press any key to close" );
             Console.Read();
+        }
+
+        static void Packet_PacketRecieved ( object sender, Packet.PacketEventArgs e ) {
+            if ( e.Packet is PacketMessage ) {
+                PacketMessage msg = e.Packet as PacketMessage;
+
+                Logger.Log( msg.Message );
+            }
         }
 
         static void OnLog ( object sender, LogEventArgs e ) {

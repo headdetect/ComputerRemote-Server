@@ -8,7 +8,6 @@ using ComputerRemote.IO;
 namespace ComputerRemote {
     public class Server {
         private TcpListener mListener;
-        private TcpListener mPingListener;
         private bool _shuttingDown;
 
         /// <summary>
@@ -42,7 +41,6 @@ namespace ComputerRemote {
         /// Starts this instance.
         /// </summary>
         public void Start () {
-            checkPort();
             mListener.Start();
             mListener.BeginAcceptTcpClient( CallBack, null );
 
@@ -78,34 +76,7 @@ namespace ComputerRemote {
 
         }
 
-        /// <summary>
-        /// Checks to see if port 7 is open (the global ping port), if it is not, it creates a listener on it
-        /// </summary>
-        void checkPort () {
-            IPGlobalProperties ipGlobalProperties = IPGlobalProperties.GetIPGlobalProperties();
-            TcpConnectionInformation[] tcpConnInfoArray = ipGlobalProperties.GetActiveTcpConnections();
 
-            foreach ( TcpConnectionInformation tcpi in tcpConnInfoArray )
-                if ( tcpi.LocalEndPoint.Port == 7 )
-                    return;
-
-            mPingListener = new TcpListener( IPAddress.Any, 7 );
-            mPingListener.Start();
-            ObjectOutput.Write( "Ping server started" );
-            mPingListener.BeginAcceptTcpClient( onPinged, null );
-
-        }
-
-        void onPinged ( IAsyncResult rec ) {
-            try {
-                ObjectOutput.Write( "Pinged" );
-                TcpClient c = mPingListener.EndAcceptTcpClient( rec );
-                c.Close();
-            }
-            catch { }
-            if ( !_shuttingDown )
-                mPingListener.BeginAcceptTcpClient( onPinged, null );
-        }
     }
 }
 
