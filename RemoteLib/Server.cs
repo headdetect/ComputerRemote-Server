@@ -19,6 +19,11 @@ namespace ComputerRemote {
         public List<Client> Clients { get; private set; }
 
         /// <summary>
+        /// Gets the local IP of the server.
+        /// </summary>
+        public IPAddress LocalIP { get; private set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Server"/> class.
         /// </summary>
         public Server () {
@@ -44,17 +49,12 @@ namespace ComputerRemote {
             mListener.Start();
             mListener.BeginAcceptTcpClient( CallBack, null );
 
-            string ips = "";
-
-            //Get localIP
             foreach ( var ip in Dns.GetHostEntry( Dns.GetHostName() ).AddressList ) {
                 if ( ip.AddressFamily == AddressFamily.InterNetwork ) {
-                    ips = ip.ToString();
+                    LocalIP = ip;
                 }
             }
-            //End get localIP
 
-            ObjectOutput.Write( "Server Started (" + ips + ")" );
         }
 
         void CallBack ( IAsyncResult result ) {
@@ -64,7 +64,7 @@ namespace ComputerRemote {
                 Client client = new Client( mListener.EndAcceptTcpClient( result ) ); //Thread stuck until client connects
                 Clients.Add( client );
                 client.StartClient();
-                ObjectOutput.Write( "Client connected (" + ((IPEndPoint)client.ClientSocket.Client.RemoteEndPoint).Address.ToString() + ")" );
+                
             }
             catch ( Exception e ) {
                 ObjectOutput.Write( e );

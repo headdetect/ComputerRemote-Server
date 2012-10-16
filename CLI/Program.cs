@@ -6,6 +6,7 @@ using ComputerRemote.CLI.Utils;
 using CLI.Packets;
 using ComputerRemote.Networking;
 using RemoteLib.Networking;
+using System.Net;
 
 namespace ComputerRemote.CLI {
     class Program {
@@ -41,7 +42,10 @@ namespace ComputerRemote.CLI {
             MultiCast cast = null;
 
             server.Start();
+            Logger.Log( "Server Started (" + server.LocalIP.ToString() + ")");
             
+
+            Client.ClientJoined += new EventHandler<Client.ClientConnectionEventArgs>( Client_ClientJoined );
 
             if ( Paramaters.Multicating ) {
                 cast = new MultiCast();
@@ -62,7 +66,7 @@ namespace ComputerRemote.CLI {
                     }
 
                     Console.SetCursorPosition( Console.CursorLeft, Console.CursorTop - 1 );
-                    Logger.Log( "[ " + DateTime.Now.ToString( "T" ) + " ] - " + read );
+                    Logger.Log( read );
                 }
             }
 
@@ -76,11 +80,15 @@ namespace ComputerRemote.CLI {
             Console.Read();
         }
 
+        static void Client_ClientJoined ( object sender, Client.ClientConnectionEventArgs e ) {
+            Logger.Log( "Client connected (" + ( (IPEndPoint) e.Client.ClientSocket.Client.RemoteEndPoint ).Address.ToString() + ")" );
+        }
+
         static void Packet_PacketRecieved ( object sender, Packet.PacketEventArgs e ) {
             if ( e.Packet is PacketMessage ) {
                 PacketMessage msg = e.Packet as PacketMessage;
 
-                Logger.Log( msg.Message );
+                Logger.Log( "(Client) " + msg.Message );
             }
         }
 
@@ -88,7 +96,7 @@ namespace ComputerRemote.CLI {
             Console.ForegroundColor = e.TextColor;
             Console.BackgroundColor = e.BackgroundColor;
 
-            Console.WriteLine( e.Message );
+            Console.WriteLine( "[ " + DateTime.Now.ToString( "T" ) + " ] - " + e.Message );
 
             Console.ForegroundColor = regularForColor;
             Console.BackgroundColor = regularBackColor;
