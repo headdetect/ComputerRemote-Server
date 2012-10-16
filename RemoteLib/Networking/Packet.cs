@@ -146,9 +146,9 @@ namespace ComputerRemote.Networking {
         /// <param name="s">The s.</param>
         /// <returns>a byte array</returns>
         public static byte[] GetString ( string s ) {
-            byte[] a = new byte[ s.Length + 2 ];
-            GetShort( (short) s.Length ).CopyTo( a, 0 );
-            Encoding.UTF8.GetBytes( s ).CopyTo( a, 2 );
+            byte[] a = new byte[ s.Length + 4 ];
+            GetInt( s.Length ).CopyTo( a, 0 );
+            Encoding.UTF8.GetBytes( s ).CopyTo( a, 4 );
             return a;
         }
 
@@ -158,7 +158,7 @@ namespace ComputerRemote.Networking {
         /// <param name="s">The s.</param>
         /// <returns></returns>
         public static byte[] GetInt ( int s ) {
-            return BitConverter.GetBytes( IPAddress.HostToNetworkOrder( s ) );
+            return BitConverter.GetBytes(  s  );
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace ComputerRemote.Networking {
         /// <param name="s">The s.</param>
         /// <returns></returns>
         public static byte[] GetLong ( long s ) {
-            return BitConverter.GetBytes( IPAddress.HostToNetworkOrder( s ) );
+            return BitConverter.GetBytes(  s  );
         }
 
         /// <summary>
@@ -176,7 +176,7 @@ namespace ComputerRemote.Networking {
         /// <param name="s">The s.</param>
         /// <returns></returns>
         public static byte[] GetShort ( short s ) {
-            return BitConverter.GetBytes( IPAddress.HostToNetworkOrder( s ) );
+            return BitConverter.GetBytes(  s  );
         }
 
         /// <summary>
@@ -259,7 +259,7 @@ namespace ComputerRemote.Networking {
         }
 
         public static string ReadString ( Stream mStream, int start = 0 ) {
-            int len = ReadShort( mStream );
+            int len = ReadInt( mStream );
 
             byte[] bytes = new byte[ len ];
             mStream.Read( bytes, start, len );

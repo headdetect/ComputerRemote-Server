@@ -13,12 +13,22 @@ namespace CLI.Packets {
         /// </summary>
         public string Command { get; private set; }
 
+        public string Result { get; set; }
+
+        public PacketCommand(string result)
+        {
+            Result = result;
+        }
+
+        public PacketCommand() { }
+
         public override byte PacketID {
             get { return 0x05; }
         }
 
+        private byte[] _data;
         public override byte[] DataWritten {
-            get { return new byte[ 0 ];  }
+            get { return _data; }
         }
 
         public override void ReadPacket ( ComputerRemote.Client c ) {
@@ -26,7 +36,7 @@ namespace CLI.Packets {
         }
 
         public override void WritePacket ( ComputerRemote.Client c ) {
-            throw new IOException( "Is a readonly packet" );
+            _data = Packet.GetString(Result);
         }
     }
 }

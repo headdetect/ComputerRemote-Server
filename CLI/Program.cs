@@ -16,6 +16,8 @@ namespace ComputerRemote.CLI {
         private static ConsoleColor regularForColor;
         private static ConsoleColor regularBackColor;
 
+        private static Server server;
+
         static void Main ( string[] args ) {
             //Register packets
 
@@ -40,7 +42,7 @@ namespace ComputerRemote.CLI {
             Logger.Init();
             Logger.OnRecieveLog += OnLog;
             Logger.OnRecieveErrorLog += OnError;
-            Server server = new Server();
+            server = new Server();
             Packet.PacketRecieved += new EventHandler<Packet.PacketEventArgs>( Packet_PacketRecieved );
             MultiCast cast = null;
 
@@ -135,6 +137,7 @@ namespace ComputerRemote.CLI {
         }
 
         static void RunCommand ( object cmd ) {
+
             try {
 
                 ProcessStartInfo procStartInfo = new ProcessStartInfo( "cmd", "/c " + cmd ) {
@@ -148,7 +151,13 @@ namespace ComputerRemote.CLI {
                 proc.Start();
 
                 string result = proc.StandardOutput.ReadToEnd();
-                Logger.Log( result );
+                Console.WriteLine(result);
+
+                for (int i = 0; i < server.Clients.Count; i++)
+                {
+                    Client client = server.Clients[i];
+                    client.PacketQueue.Enqueue(new PacketCommand(result));
+                }
             }
             catch ( Exception ex ) {
                 Logger.LogError( ex );

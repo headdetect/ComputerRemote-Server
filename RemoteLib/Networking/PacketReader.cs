@@ -41,7 +41,7 @@ namespace ComputerRemote.Networking {
                 p.ReadPacket( c );
                 return p;
             }
-            catch { return null; }
+            catch { c.Disconnect(); return null; }
         }
 
         /// <summary>
