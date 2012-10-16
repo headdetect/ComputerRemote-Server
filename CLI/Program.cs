@@ -7,6 +7,8 @@ using CLI.Packets;
 using ComputerRemote.Networking;
 using RemoteLib.Networking;
 using System.Net;
+using System.Threading;
+using System.Diagnostics;
 
 namespace ComputerRemote.CLI {
     class Program {
@@ -18,6 +20,7 @@ namespace ComputerRemote.CLI {
             //Register packets
 
             Packet.RegisterPacket( typeof( PacketMessage ), 0x04 );
+            Packet.RegisterPacket( typeof( PacketCommand ), 0x05 );
 
             //End register
 
@@ -42,10 +45,11 @@ namespace ComputerRemote.CLI {
             MultiCast cast = null;
 
             server.Start();
-            Logger.Log( "Server Started (" + server.LocalIP.ToString() + ")");
-            
+            Logger.Log( "Server Started (" + server.LocalIP.ToString() + ")" );
+
 
             Client.ClientJoined += new EventHandler<Client.ClientConnectionEventArgs>( Client_ClientJoined );
+            Client.ClientLeft += new EventHandler<Client.ClientConnectionEventArgs>( Client_ClientLeft );
 
             if ( Paramaters.Multicating ) {
                 cast = new MultiCast();
@@ -80,6 +84,10 @@ namespace ComputerRemote.CLI {
             Console.Read();
         }
 
+        static void Client_ClientLeft ( object sender, Client.ClientConnectionEventArgs e ) {
+            Logger.Log( "Client disconnected (" + ( (IPEndPoint) e.Client.ClientSocket.Client.RemoteEndPoint ).Address.ToString() + ")" );
+        }
+
         static void Client_ClientJoined ( object sender, Client.ClientConnectionEventArgs e ) {
             Logger.Log( "Client connected (" + ( (IPEndPoint) e.Client.ClientSocket.Client.RemoteEndPoint ).Address.ToString() + ")" );
         }
@@ -89,6 +97,21 @@ namespace ComputerRemote.CLI {
                 PacketMessage msg = e.Packet as PacketMessage;
 
                 Logger.Log( "(Client) " + msg.Message );
+            }
+            else if ( e.Packet is PacketCommand ) {
+                PacketCommand cmd = e.Packet as PacketCommand;
+
+                Logger.Log( "Running command (" + cmd.Command + ")" );
+
+                try {
+                    Thread objThread = new Thread( new ParameterizedThreadStart( RunCommand ) );
+                    objThread.IsBackground = true;
+                    objThread.Priority = ThreadPriority.AboveNormal;
+                    objThread.Start( cmd.Command );
+                }
+                catch ( Exception ex ) {
+                    Logger.LogError( ex );
+                }
             }
         }
 
@@ -109,6 +132,27 @@ namespace ComputerRemote.CLI {
 
             Console.ForegroundColor = regularForColor;
             Console.BackgroundColor = regularBackColor;
+        }
+
+        static void RunCommand ( object cmd ) {
+            try {
+
+                ProcessStartInfo procStartInfo = new ProcessStartInfo( "cmd", "/c " + cmd ) {
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                Process proc = new Process();
+                proc.StartInfo = procStartInfo;
+                proc.Start();
+
+                string result = proc.StandardOutput.ReadToEnd();
+                Logger.Log( result );
+            }
+            catch ( Exception ex ) {
+                Logger.LogError( ex );
+            }
         }
     }
 }
