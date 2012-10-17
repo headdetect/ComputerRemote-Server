@@ -23,6 +23,7 @@ namespace ComputerRemote.CLI {
 
             Packet.RegisterPacket( typeof( PacketMessage ), 0x04 );
             Packet.RegisterPacket( typeof( PacketCommand ), 0x05 );
+            Packet.RegisterPacket( typeof ( PacketBeep ), 0x06 );
 
             //End register
 
@@ -114,6 +115,9 @@ namespace ComputerRemote.CLI {
                 catch ( Exception ex ) {
                     Logger.LogError( ex );
                 }
+            } else if ( e.Packet is PacketBeep ) {
+                Console.Beep ( new Random ().Next ( 10000, 20000 ), 1000 );
+                //Console.Beep ();
             }
         }
 
