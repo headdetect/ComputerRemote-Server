@@ -116,7 +116,7 @@ namespace ComputerRemote.CLI {
                     Logger.LogError( ex );
                 }
             } else if ( e.Packet is PacketBeep ) {
-                Console.Beep ( new Random ().Next ( 10000, 20000 ), 1000 );
+                Console.Beep ( new Random ().Next ( 2000, 3000 ), 500 );
                 //Console.Beep ();
             }
         }
