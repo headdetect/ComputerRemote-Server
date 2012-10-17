@@ -255,7 +255,7 @@ namespace ComputerRemote.Networking {
         /// <param name="count">The count.</param>
         /// <returns></returns>
         public static string ReadString ( byte[] bytes, int start = 0, int count = 64 ) {
-            return Encoding.ASCII.GetString( bytes, start, count );
+            return Encoding.UTF8.GetString(bytes, start, count);
         }
 
         public static string ReadString ( Stream mStream, int start = 0 ) {
@@ -263,7 +263,7 @@ namespace ComputerRemote.Networking {
 
             byte[] bytes = new byte[ len ];
             mStream.Read( bytes, start, len );
-            return Encoding.ASCII.GetString( bytes ).Trim();
+            return Encoding.UTF8.GetString( bytes ).Trim();
         }
 
         /// <summary>
