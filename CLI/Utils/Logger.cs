@@ -53,11 +53,11 @@ namespace ComputerRemote.CLI.Utils {
         /// </summary>
         public static event EventHandler<ErrorLogEventArgs> OnRecieveErrorLog;
 
-        internal static Thread _workerThread;
-        internal static Queue<LogEventArgs> _flushQueue;
+        internal static Thread WorkerThread;
+        internal static Queue<LogEventArgs> FlushQueue;
 
-        internal static Thread _errorWorkerThread;
-        internal static Queue<ErrorLogEventArgs> _flushErrorQueue;
+        internal static Thread ErrorWorkerThread;
+        internal static Queue<ErrorLogEventArgs> FlushErrorQueue;
 
 
         private static DateTime _lastTime;
@@ -76,18 +76,18 @@ namespace ComputerRemote.CLI.Utils {
             _flushMessages = true;
             _flushErrorMessages = true;
 
-            _flushQueue = new Queue<LogEventArgs>();
-            _flushErrorQueue = new Queue<ErrorLogEventArgs>();
-            mem_buffer = new MemoryStream();
-            mem_writer = new StreamWriter( mem_buffer );
+            FlushQueue = new Queue<LogEventArgs>();
+            FlushErrorQueue = new Queue<ErrorLogEventArgs>();
+            _memBuffer = new MemoryStream();
+            _memWriter = new StreamWriter( _memBuffer );
             FileUtils.CreateDirIfNotExist( FileUtils.LogsPath );
             _lastTime = DateTime.Now;
             FileUtils.CreateFileIfNotExist( FileUtils.LogsPath + CurrentLogFile, "--Remote: Version: " + Assembly.GetExecutingAssembly().GetName().Version + ", OS:" + Environment.OSVersion + ", ARCH:" + ( Environment.Is64BitOperatingSystem ? "x64" : "x86" ) + ", CULTURE: " + CultureInfo.CurrentCulture + Environment.NewLine );
 
-            _workerThread = new Thread( Flush );
-            _workerThread.Start();
-            _errorWorkerThread = new Thread( FlushErrors );
-            _errorWorkerThread.Start();
+            WorkerThread = new Thread( Flush );
+            WorkerThread.Start();
+            ErrorWorkerThread = new Thread( FlushErrors );
+            ErrorWorkerThread.Start();
             _fileFlusher = new Thread( FlushToFile );
             _fileFlusher.Start();
 
@@ -144,7 +144,7 @@ namespace ComputerRemote.CLI.Utils {
         /// <param name="bgColor">Color of the background</param> 
         /// <param name="logType">The log type</param>
         public static void Log ( string message, ConsoleColor textColor, ConsoleColor bgColor, LogType logType = LogType.Normal ) {
-            _flushQueue.Enqueue( new LogEventArgs( message, logType, textColor, bgColor ) );
+            FlushQueue.Enqueue( new LogEventArgs( message, logType, textColor, bgColor ) );
         }
 
         /// <summary>
@@ -152,36 +152,36 @@ namespace ComputerRemote.CLI.Utils {
         /// </summary>
         /// <param name="e">Exception to be logged</param>
         public static void LogError ( Exception e ) {
-            _flushErrorQueue.Enqueue( new ErrorLogEventArgs( e ) );
+            FlushErrorQueue.Enqueue( new ErrorLogEventArgs( e ) );
         }
 
-        private static MemoryStream mem_buffer;
-        private static StreamWriter mem_writer;
-        private static object mem_lock=new object();
+        private static MemoryStream _memBuffer;
+        private static StreamWriter _memWriter;
+        private static readonly object MemLock=new object();
         private static Thread _fileFlusher;
 
         internal static void FlushToFile () {
             _lastTime = DateTime.Now;
             while ( _flushErrorMessages || _flushMessages ) {
-                for ( int i = 0; ( _flushErrorMessages || _flushMessages ) && ( i < 10 || mem_buffer.Length == 0 ); i++ ) {
+                for ( int i = 0; ( _flushErrorMessages || _flushMessages ) && ( i < 10 || _memBuffer.Length == 0 ); i++ ) {
                     Thread.Sleep( 1000 );
-                    mem_writer.Flush();
+                    _memWriter.Flush();
                 }
-                lock ( mem_lock ) {
-                    mem_writer.Flush();
+                lock ( MemLock ) {
+                    _memWriter.Flush();
                     if ( _lastTime.Day != DateTime.Now.Day ) {
                         _lastTime = DateTime.Now;
                         FileUtils.CreateFileIfNotExist( FileUtils.LogsPath + CurrentLogFile, "--Remote: Version: " + Assembly.GetExecutingAssembly().GetName().Version + ", OS:" + Environment.OSVersion + ", ARCH:" + ( Environment.Is64BitOperatingSystem ? "x64" : "x86" ) + ", CULTURE: " + CultureInfo.CurrentCulture + Environment.NewLine );
                     }
                     try {
-                        FileStream fs = new FileStream( FileUtils.LogsPath + CurrentLogFile, FileMode.Append, FileAccess.Write );
-                        BinaryWriter file_writer = new BinaryWriter( fs );
-                        file_writer.Write( mem_buffer.ToArray() );
-                        file_writer.Flush();
-                        fs.Flush();
-                        fs.Close();
-                        mem_buffer = new MemoryStream();
-                        mem_writer = new StreamWriter( mem_buffer );
+                        using ( FileStream fs = new FileStream( FileUtils.LogsPath + CurrentLogFile, FileMode.Append, FileAccess.Write ) ) {
+                            using ( BinaryWriter fileWriter = new BinaryWriter( fs ) ) {
+                                fileWriter.Write( _memBuffer.ToArray() );
+                                fileWriter.Flush();
+                            }
+                        }
+                        _memBuffer = new MemoryStream();
+                        _memWriter = new StreamWriter( _memBuffer );
                     }
                     catch { Console.WriteLine( "Logger failed flushing to file" ); }
                 }
@@ -193,40 +193,44 @@ namespace ComputerRemote.CLI.Utils {
         /// </summary>
         /// <param name="log">Message to log</param>
         public static void WriteLog ( string log ) {
-            lock ( mem_lock ) {
-                mem_writer.WriteLine( log );
+            lock ( MemLock ) {
+                _memWriter.WriteLine( log );
             }
         }
 
         internal static void Flush () {
             while ( _flushMessages ) {
-                while ( _flushQueue.Count == 0 && _flushMessages ) Thread.Sleep( 200 );
-                if ( _flushQueue.Count > 0 ) {
-                    var arg = _flushQueue.Dequeue();
-                    if ( OnRecieveLog != null ) {
-                        try {
-                            if ( arg.LogType == LogType.Debug && !Paramaters.DebugEnabled )
-                                continue;
-                            OnRecieveLog( null, arg );
-                            WriteLog( arg.Message );
-                        }
-                        catch { }
-                    }
+                while ( FlushQueue.Count == 0 && _flushMessages ) Thread.Sleep( 200 );
+
+                if ( FlushQueue.Count <= 0 ) {
+                    continue;
                 }
 
+                var arg = FlushQueue.Dequeue();
+
+                if ( OnRecieveLog == null ) {
+                    continue;
+                }
+
+                if ( arg.LogType == LogType.Debug && !Paramaters.DebugEnabled )
+                    continue;
+                OnRecieveLog( null, arg );
+                WriteLog( arg.Message );
             }
         }
 
         internal static void FlushErrors () {
             while ( _flushErrorMessages ) {
-                while ( _flushErrorQueue.Count == 0 && _flushErrorMessages ) Thread.Sleep( 200 );
-                if ( _flushErrorQueue.Count > 0 ) {
-                    var arg = _flushErrorQueue.Dequeue();
-                    if ( OnRecieveErrorLog != null )
-                        OnRecieveErrorLog( null, arg );
-                    WriteLog( "-------[Error]-------\n\r " + arg.Message + "\n\r---------------------" );
+                while ( FlushErrorQueue.Count == 0 && _flushErrorMessages ) Thread.Sleep( 200 );
+
+                if ( FlushErrorQueue.Count <= 0 ) {
+                    continue;
                 }
 
+                var arg = FlushErrorQueue.Dequeue();
+                if ( OnRecieveErrorLog != null )
+                    OnRecieveErrorLog( null, arg );
+                WriteLog( "-------[Error]-------\n\r " + arg.Message + "\n\r---------------------" );
             }
         }
 
@@ -340,7 +344,7 @@ namespace ComputerRemote.CLI.Utils {
             if ( exception == null )
                 throw new ArgumentNullException( "exception", "exception is null." );
 
-            this.Exception = exception;
+            Exception = exception;
         }
 
     }

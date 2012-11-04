@@ -1,30 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
-namespace TVRemote.Utils {
+namespace TVRemoteGUI.Windows.Utils {
 
-    public class TypeCollection<T> : System.Windows.Forms.ListBox.ObjectCollection {
+    public class TypeCollection<T> : ListBox.ObjectCollection {
 
-        private ListBox owner;
+        private readonly ListBox _owner;
 
         public TypeCollection( ListBox owner )
             : base( owner ) {
-            this.owner = owner;
+            _owner = owner;
         }
 
         public new IEnumerator<T> GetEnumerator() {
             while ( base.GetEnumerator().MoveNext() )
-                yield return ( T ) owner.Items.GetEnumerator().Current;
+                yield return ( T ) _owner.Items.GetEnumerator().Current;
         }
 
         public int Add( T entry ) {
             if ( entry == null )
                 throw new ArgumentNullException( "entry", "entry is null." );
 
-            return this.owner.Items.Add( entry );
+            return _owner.Items.Add( entry );
         }
 
 
@@ -40,10 +38,10 @@ namespace TVRemote.Utils {
 
         public new T this[ int index ] {
             get {
-                return ( T ) owner.Items[ index ];
+                return ( T ) _owner.Items[ index ];
             }
             set {
-                owner.Items[ index ] = ( T ) value;
+                _owner.Items[ index ] =  value;
             }
         }
     }

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;
+﻿using System.Drawing;
 
-namespace TVRemote.Utils {
+namespace TVRemoteGUI.Windows.Utils {
 
     /// <summary>
     /// Native Rectangle
@@ -107,7 +103,7 @@ namespace TVRemote.Utils {
         }
 
         /// <summary>
-        /// Performs an implicit conversion from <see cref="MCForge.Gui.Utils.RECT"/> to <see cref="System.Drawing.Rectangle"/>.
+        /// Performs an implicit conversion from <see cref="RECT"/> to <see cref="Rectangle"/>.
         /// </summary>
         /// <param name="margs">The margs.</param>
         /// <returns>
@@ -118,7 +114,7 @@ namespace TVRemote.Utils {
         }
 
         /// <summary>
-        /// Performs an implicit conversion from <see cref="System.Drawing.Rectangle"/> to <see cref="MCForge.Gui.Utils.RECT"/>.
+        /// Performs an implicit conversion from <see cref="Rectangle"/> to <see cref="RECT"/>.
         /// </summary>
         /// <param name="margs">The margs.</param>
         /// <returns>

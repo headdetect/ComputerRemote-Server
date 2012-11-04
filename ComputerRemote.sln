@@ -5,7 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteLib", "RemoteLib\Remo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLI", "CLI\CLI.csproj", "{DD76CA75-2A9C-400C-85C1-99F21CA98CB1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TVRemote", "TVRemote\TVRemote.csproj", "{E93360A0-E918-4827-B92B-ED7211DCE759}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TVRemoteGUI", "TVRemoteGUI\TVRemoteGUI.csproj", "{EB119EFF-793C-4C35-90D8-1670F324476F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,16 +37,16 @@ Global
 		{DD76CA75-2A9C-400C-85C1-99F21CA98CB1}.Release|Mixed Platforms.Build.0 = Release|x86
 		{DD76CA75-2A9C-400C-85C1-99F21CA98CB1}.Release|x86.ActiveCfg = Release|x86
 		{DD76CA75-2A9C-400C-85C1-99F21CA98CB1}.Release|x86.Build.0 = Release|x86
-		{E93360A0-E918-4827-B92B-ED7211DCE759}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{E93360A0-E918-4827-B92B-ED7211DCE759}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{E93360A0-E918-4827-B92B-ED7211DCE759}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{E93360A0-E918-4827-B92B-ED7211DCE759}.Debug|x86.ActiveCfg = Debug|x86
-		{E93360A0-E918-4827-B92B-ED7211DCE759}.Debug|x86.Build.0 = Debug|x86
-		{E93360A0-E918-4827-B92B-ED7211DCE759}.Release|Any CPU.ActiveCfg = Release|x86
-		{E93360A0-E918-4827-B92B-ED7211DCE759}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{E93360A0-E918-4827-B92B-ED7211DCE759}.Release|Mixed Platforms.Build.0 = Release|x86
-		{E93360A0-E918-4827-B92B-ED7211DCE759}.Release|x86.ActiveCfg = Release|x86
-		{E93360A0-E918-4827-B92B-ED7211DCE759}.Release|x86.Build.0 = Release|x86
+		{EB119EFF-793C-4C35-90D8-1670F324476F}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{EB119EFF-793C-4C35-90D8-1670F324476F}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{EB119EFF-793C-4C35-90D8-1670F324476F}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{EB119EFF-793C-4C35-90D8-1670F324476F}.Debug|x86.ActiveCfg = Debug|x86
+		{EB119EFF-793C-4C35-90D8-1670F324476F}.Debug|x86.Build.0 = Debug|x86
+		{EB119EFF-793C-4C35-90D8-1670F324476F}.Release|Any CPU.ActiveCfg = Release|x86
+		{EB119EFF-793C-4C35-90D8-1670F324476F}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{EB119EFF-793C-4C35-90D8-1670F324476F}.Release|Mixed Platforms.Build.0 = Release|x86
+		{EB119EFF-793C-4C35-90D8-1670F324476F}.Release|x86.ActiveCfg = Release|x86
+		{EB119EFF-793C-4C35-90D8-1670F324476F}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

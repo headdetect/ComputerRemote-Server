@@ -1,0 +1,9 @@
+﻿<Utils:AeroWindow x:Class="TVRemoteGUI.Windows.VideoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:Utils="clr-namespace:TVRemoteGUI.Windows.Utils"
+                Title="VideoWindow" Height="398" Width="605" Loaded="WindowLoaded">
+    <Grid>
+        <MediaElement Margin="12,12,12,48" Name="mPlayer" />
+        <Label Content="Label" Height="28" HorizontalAlignment="Left" Margin="256,319,0,0" Name="label1" VerticalAlignment="Top" />
+    </Grid>
+</Utils:AeroWindow>

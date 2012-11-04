@@ -34,7 +34,7 @@ using System.Reflection;
 using System.Globalization;
 using ComputerRemote.IO;
 
-namespace TVRemote.Utils {
+namespace TVRemoteGUI.Windows.Utils {
     /// <summary>
     /// Logger Utility
     /// </summary>

@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
-namespace TVRemote.Utils {
+namespace TVRemoteGUI.Windows.Utils {
 
     public static class GraphicsExtention {
 

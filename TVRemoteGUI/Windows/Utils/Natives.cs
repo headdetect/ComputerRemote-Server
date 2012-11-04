@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
 using System.Drawing;
-using System.Windows.Forms.VisualStyles;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 
-namespace TVRemote.Utils {
+namespace TVRemoteGUI.Windows.Utils {
 
     internal class Natives {
 
@@ -231,7 +228,6 @@ namespace TVRemote.Utils {
 
             IntPtr destdc = gph.GetHdc();
             IntPtr Memdc = CreateCompatibleDC( destdc );
-            IntPtr bitmap;
             IntPtr bitmapOld = IntPtr.Zero;
 
             BITMAPINFO dib = new BITMAPINFO() {
@@ -246,7 +242,7 @@ namespace TVRemote.Utils {
             };
 
             if ( SaveDC( Memdc ) != 0 ) {
-                bitmap = CreateDIBSection( Memdc, ref dib, DIB_RGB_COLORS, 0, IntPtr.Zero, 0 );
+                IntPtr bitmap = CreateDIBSection( Memdc, ref dib, DIB_RGB_COLORS, 0, IntPtr.Zero, 0 );
 
                 try {
 
@@ -286,11 +282,9 @@ namespace TVRemote.Utils {
 
             IntPtr destdc = GetDC( hwnd );
             IntPtr Memdc = CreateCompatibleDC( destdc );
-            IntPtr bitmap;
             IntPtr bitmapOld = IntPtr.Zero;
-            IntPtr logfnotOld;
 
-            int uFormat = DT_SINGLELINE | DT_CENTER | DT_VCENTER | DT_NOPREFIX;
+            const int uFormat = DT_SINGLELINE | DT_CENTER | DT_VCENTER | DT_NOPREFIX;
 
             BITMAPINFO dib = new BITMAPINFO() {
                 bmiHeader = new BITMAPINFOHEADER() {
@@ -304,11 +298,11 @@ namespace TVRemote.Utils {
             };
 
             if ( SaveDC( Memdc ) != 0 ) {
-                bitmap = CreateDIBSection( Memdc, ref dib, DIB_RGB_COLORS, 0, IntPtr.Zero, 0 );   // Create a 32-bit bmp for use in offscreen drawing when glass is on
+                IntPtr bitmap = CreateDIBSection( Memdc, ref dib, DIB_RGB_COLORS, 0, IntPtr.Zero, 0 );
                 if ( bitmap != IntPtr.Zero ) {
                     bitmapOld = SelectObject( Memdc, bitmap );
                     IntPtr hFont = font.ToHfont();
-                    logfnotOld = SelectObject( Memdc, hFont );
+                    IntPtr logfnotOld = SelectObject( Memdc, hFont );
                     try {
 
                         VisualStyleRenderer renderer = new VisualStyleRenderer( VisualStyleElement.Window.Caption.Active );
@@ -339,9 +333,7 @@ namespace TVRemote.Utils {
                     }
 
                 }
-
             }
-
         }
 
         public static void ExtendGlass( IntPtr handle, Rectangle bounds ) {
@@ -365,8 +357,7 @@ namespace TVRemote.Utils {
             if (pi == null) {
                 OperatingSystem os = System.Environment.OSVersion;
                 if (os.Platform == PlatformID.Win32NT && (((os.Version.Major == 5) && (os.Version.Minor >= 1)) || (os.Version.Major > 5))) {
-                    DLLVersionInfo version = new DLLVersionInfo();
-                    version.cbSize = Marshal.SizeOf(typeof(DLLVersionInfo));
+                    DLLVersionInfo version = new DLLVersionInfo { cbSize = Marshal.SizeOf ( typeof ( DLLVersionInfo ) ) };
                     if (DllGetVersion(ref version) == 0) {
                         return (version.dwMajorVersion > 5) && IsThemeActive() && IsAppThemed();
                     }
@@ -374,10 +365,9 @@ namespace TVRemote.Utils {
 
                 return false;
             }
-            else {
-                bool result = (bool)pi.GetValue(null, null);
-                return result;
-            }
+
+            bool result = (bool)pi.GetValue(null, null);
+            return result;
         }
 
         #endregion

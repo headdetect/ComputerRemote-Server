@@ -1,7 +1,7 @@
-﻿<Application x:Class="TVRemote.App"
+﻿<Application x:Class="TVRemoteGUI.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="VideoWindow.xaml">
+             StartupUri="Windows/VideoWindow.xaml">
     <Application.Resources>
          
     </Application.Resources>

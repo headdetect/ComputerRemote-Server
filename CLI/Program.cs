@@ -13,10 +13,10 @@ using System.Diagnostics;
 namespace ComputerRemote.CLI {
     class Program {
 
-        private static ConsoleColor regularForColor;
-        private static ConsoleColor regularBackColor;
+        private static ConsoleColor _regularForColor;
+        private static ConsoleColor _regularBackColor;
 
-        private static Server server;
+        private static Server _server;
 
         static void Main ( string[] args ) {
             //Register packets
@@ -26,15 +26,15 @@ namespace ComputerRemote.CLI {
 
             //End register
 
-            regularBackColor = Console.BackgroundColor;
-            regularForColor = Console.ForegroundColor;
+            _regularBackColor = Console.BackgroundColor;
+            _regularForColor = Console.ForegroundColor;
 
 
             for ( int i = 0; i < args.Length; i++ ) {
-                if ( args[ i ].IndexOf( "--debug" ) != -1 ) {
+                if ( args[ i ].IndexOf("--debug", StringComparison.Ordinal) != -1 ) {
                     Paramaters.DebugEnabled = true;
                 }
-                else if ( args[ i ].IndexOf( "--nocast" ) != -1 ) {
+                else if ( args[ i ].IndexOf("--nocast", StringComparison.Ordinal) != -1 ) {
                     Paramaters.Multicating = false;
                 }
             }
@@ -42,16 +42,16 @@ namespace ComputerRemote.CLI {
             Logger.Init();
             Logger.OnRecieveLog += OnLog;
             Logger.OnRecieveErrorLog += OnError;
-            server = new Server();
-            Packet.PacketRecieved += new EventHandler<Packet.PacketEventArgs>( Packet_PacketRecieved );
+            _server = new Server();
+            Packet.PacketRecieved += Packet_PacketRecieved;
             MultiCast cast = null;
 
-            server.Start();
-            Logger.Log( "Server Started (" + server.LocalIP.ToString() + ")" );
+            _server.Start();
+            Logger.Log( "Server Started (" + _server.LocalIP.ToString() + ")" );
 
 
-            Client.ClientJoined += new EventHandler<Client.ClientConnectionEventArgs>( Client_ClientJoined );
-            Client.ClientLeft += new EventHandler<Client.ClientConnectionEventArgs>( Client_ClientLeft );
+            Client.ClientJoined += Client_ClientJoined;
+            Client.ClientLeft += Client_ClientLeft;
 
             if ( Paramaters.Multicating ) {
                 cast = new MultiCast();
@@ -66,8 +66,8 @@ namespace ComputerRemote.CLI {
                     break;
                 }
                 else {
-                    for ( int i = 0; i < server.Clients.Count; i++ ) {
-                        Client c = server.Clients[ i ];
+                    for ( int i = 0; i < _server.Clients.Count; i++ ) {
+                        Client c = _server.Clients[ i ];
                         c.PacketQueue.Enqueue( new PacketMessage( read ) );
                     }
 
@@ -80,7 +80,7 @@ namespace ComputerRemote.CLI {
                 cast.Stop();
             }
 
-            server.Stop();
+            _server.Stop();
             Console.Clear();
             Console.WriteLine( "Press any key to close" );
             Console.Read();
@@ -91,7 +91,7 @@ namespace ComputerRemote.CLI {
         }
 
         static void Client_ClientJoined ( object sender, Client.ClientConnectionEventArgs e ) {
-            Logger.Log( "Client connected (" + ( (IPEndPoint) e.Client.ClientSocket.Client.RemoteEndPoint ).Address.ToString() + ")" );
+            Logger.Log( "Client connected (" + ( (IPEndPoint) e.Client.ClientSocket.Client.RemoteEndPoint ).Address + ")" );
         }
 
         static void Packet_PacketRecieved ( object sender, Packet.PacketEventArgs e ) {
@@ -106,9 +106,7 @@ namespace ComputerRemote.CLI {
                 Logger.Log( "Running command (" + cmd.Command + ")" );
 
                 try {
-                    Thread objThread = new Thread( new ParameterizedThreadStart( RunCommand ) );
-                    objThread.IsBackground = true;
-                    objThread.Priority = ThreadPriority.AboveNormal;
+                    Thread objThread = new Thread( RunCommand ) { IsBackground = true, Priority = ThreadPriority.AboveNormal };
                     objThread.Start( cmd.Command );
                 }
                 catch ( Exception ex ) {
@@ -123,8 +121,8 @@ namespace ComputerRemote.CLI {
 
             Console.WriteLine( "[ " + DateTime.Now.ToString( "T" ) + " ] - " + e.Message );
 
-            Console.ForegroundColor = regularForColor;
-            Console.BackgroundColor = regularBackColor;
+            Console.ForegroundColor = _regularForColor;
+            Console.BackgroundColor = _regularBackColor;
         }
         static void OnError ( object sender, ErrorLogEventArgs e ) {
             Console.ForegroundColor = e.TextColor;
@@ -132,8 +130,8 @@ namespace ComputerRemote.CLI {
 
             Console.Error.WriteLine( "[Error] " + e.Message );
 
-            Console.ForegroundColor = regularForColor;
-            Console.BackgroundColor = regularBackColor;
+            Console.ForegroundColor = _regularForColor;
+            Console.BackgroundColor = _regularBackColor;
         }
 
         static void RunCommand ( object cmd ) {
@@ -146,17 +144,15 @@ namespace ComputerRemote.CLI {
                     CreateNoWindow = true
                 };
 
-                Process proc = new Process();
-                proc.StartInfo = procStartInfo;
+                Process proc = new Process { StartInfo = procStartInfo };
                 proc.Start();
 
                 string result = proc.StandardOutput.ReadToEnd();
-                Console.WriteLine(result);
+                Console.WriteLine( result );
 
-                for (int i = 0; i < server.Clients.Count; i++)
-                {
-                    Client client = server.Clients[i];
-                    client.PacketQueue.Enqueue(new PacketCommand(result));
+                for ( int i = 0; i < _server.Clients.Count; i++ ) {
+                    Client client = _server.Clients[ i ];
+                    client.PacketQueue.Enqueue( new PacketCommand( result ) );
                 }
             }
             catch ( Exception ex ) {
