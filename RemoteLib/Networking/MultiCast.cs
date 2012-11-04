@@ -52,7 +52,7 @@ namespace RemoteLib.Networking {
                 if ( castSocket == null )
                     break;
 
-                byte[] data = Encoding.ASCII.GetBytes( Environment.MachineName );
+                byte[] data = Encoding.UTF8.GetBytes(Environment.MachineName);
                 castSocket.Send( data );
 
                 Thread.Sleep( 2000 );

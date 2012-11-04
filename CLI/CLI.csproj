@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Packets\PacketBeep.cs" />
     <Compile Include="Packets\PacketCommand.cs" />
     <Compile Include="Packets\PacketMessage.cs" />
     <Compile Include="Utils\FileUtils.cs" />
