@@ -9,7 +9,7 @@ namespace TVRemoteGUI.Windows.Interop {
     public class VideoDiscoverer {
 
         private readonly string _parentFolder;
-        private static readonly IntPtr _INVALID_HANDLE = new IntPtr( -1 );
+        private static readonly IntPtr _INVALID_HANDLE = new IntPtr ( -1 );
         private static readonly string[] _FILE_TYPES = new[] { "avi", "wmv", "mp4" };
 
 
@@ -28,18 +28,28 @@ namespace TVRemoteGUI.Windows.Interop {
                 case DiscoverType.Videos:
                     _parentFolder = Environment.GetFolderPath ( Environment.SpecialFolder.MyVideos );
                     break;
+                case DiscoverType.Downloads:
+                    _parentFolder = Environment.GetFolderPath ( Environment.SpecialFolder.UserProfile ) + "\\Downloads";
+                    break;
+                case DiscoverType.Library:
+                    _parentFolder = Environment.GetFolderPath ( Environment.SpecialFolder.UserProfile );
+                    break;
+                case DiscoverType.Full:
+                    _parentFolder = Path.GetPathRoot ( Environment.CurrentDirectory );
+                    break;
+
             }
 
         }
         /// <summary>
         /// Discovers the videos from the specified point.
         /// </summary>
-        public void Discover() {
+        public void Discover () {
             Start ( _parentFolder );
         }
 
 
-        private void Start (string path) {
+        private void Start ( string path ) {
 
             //Sets the defaults
             IntPtr fHandle = _INVALID_HANDLE;
@@ -48,33 +58,32 @@ namespace TVRemoteGUI.Windows.Interop {
             for ( int i = 0; i < 3; i++ ) {
                 string extention = _FILE_TYPES[ i ];
                 try {
-                    fHandle = NativeFileUtils.FindFirstFileW( path + "\\*", out data );
+                    fHandle = NativeFileUtils.FindFirstFileW ( path + "\\*", out data );
                     if ( fHandle != _INVALID_HANDLE ) {
                         do {
-                            string fullpath = path + ( path.EndsWith( "\\" ) ? "" : "\\" ) + data.cFileName;
+                            string fullpath = path + ( path.EndsWith ( "\\" ) ? "" : "\\" ) + data.cFileName;
 
                             if ( data.cFileName == "." || data.cFileName == ".." ) {
                                 //They just happen to be directories, not files yo.
                                 continue;
                             }
 
-                            
+
 
                             if ( ( data.dwFileAttributes & FileAttributes.Directory ) != 0 ) {
-                                Start(fullpath);
+                                Start ( fullpath );
                             }
 
-                            if ( VideoDiscovered != null && fullpath.EndsWith( extention, StringComparison.OrdinalIgnoreCase ) ) {
-                                VideoDiscovered( this, new VideoDiscoveredArgs( fullpath ) );
+                            if ( VideoDiscovered != null && fullpath.EndsWith ( extention, StringComparison.OrdinalIgnoreCase ) ) {
+                                VideoDiscovered ( this, new VideoDiscoveredArgs ( fullpath ) );
                             }
 
 
-                        } while ( NativeFileUtils.FindNextFile( fHandle, out data ) );
+                        } while ( NativeFileUtils.FindNextFile ( fHandle, out data ) );
                     }
-                }
-                finally {
+                } finally {
                     if ( fHandle != _INVALID_HANDLE ) {
-                        NativeFileUtils.FindClose( fHandle );
+                        NativeFileUtils.FindClose ( fHandle );
                     }
                 }
             }

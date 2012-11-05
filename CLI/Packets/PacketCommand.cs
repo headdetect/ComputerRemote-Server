@@ -15,12 +15,11 @@ namespace CLI.Packets {
 
         public string Result { get; set; }
 
-        public PacketCommand(string result)
-        {
+        public PacketCommand ( string result ) {
             Result = result;
         }
 
-        public PacketCommand() { }
+        public PacketCommand () { }
 
         public override byte PacketID {
             get { return 0x05; }
@@ -32,11 +31,11 @@ namespace CLI.Packets {
         }
 
         public override void ReadPacket ( ComputerRemote.Client c ) {
-            Command = Packet.ReadString( c.NStream );
+            Command = Packet.ReadString ( c.NStream );
         }
 
         public override void WritePacket ( ComputerRemote.Client c ) {
-            _data = Packet.GetString(Result);
+            _data = Packet.GetString ( Result );
         }
     }
 }

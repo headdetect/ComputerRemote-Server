@@ -1,9 +1,10 @@
 ﻿<Utils:AeroWindow x:Class="TVRemoteGUI.Windows.VideoWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:Utils="clr-namespace:TVRemoteGUI.Windows.Utils"
-                Title="VideoWindow" Height="714" Width="838" Loaded="WindowLoaded">
+                Title="VideoWindow" Height="714" Width="838" Loaded="WindowLoaded" Closing="AeroWindow_Closing">
     <Grid>
         <MediaElement Margin="12,12,12,198" Name="mPlayer" />
-        <ListBox Height="180" Margin="12,0,12,12" Name="lstVideos" VerticalAlignment="Bottom" MouseDoubleClick="lstVideos_MouseDoubleClick" />
+        <ListBox Height="180" Margin="12,0,400,12" Name="lstVideos" VerticalAlignment="Bottom" MouseDoubleClick="lstVideos_MouseDoubleClick" />
+        <TextBox Margin="422,0,12,12" Name="txtLog" Height="180" VerticalAlignment="Bottom" />
     </Grid>
 </Utils:AeroWindow>
