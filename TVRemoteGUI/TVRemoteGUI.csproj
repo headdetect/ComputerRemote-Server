@@ -57,6 +57,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Windows\Interop\NativeFileUtils.cs" />
+    <Compile Include="Windows\Interop\VideoDiscoverer.cs" />
+    <Compile Include="Windows\Interop\VideoFilter.cs" />
     <Compile Include="Windows\Utils\AeroForm.cs" />
     <Compile Include="Windows\Utils\FileUtils.cs" />
     <Compile Include="Windows\Utils\GraphicsExtention.cs" />
