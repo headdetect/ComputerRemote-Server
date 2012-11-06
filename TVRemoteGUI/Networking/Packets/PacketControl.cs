@@ -34,12 +34,14 @@ namespace TVRemoteGUI.Networking.Packets {
         }
 
         public override void WritePacket ( ComputerRemote.Client c ) {
-            throw new IOException ( "Is a read-only packet" );
+            throw new IOException ( "Is a read-only packet" ); //For now
         }
 
     }
 
     public enum ControlType {
+
+        FullScreen,
 
         Pause,
 

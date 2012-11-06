@@ -9,6 +9,7 @@ using TVRemoteGUI.Networking.Packets;
 using ComputerRemote;
 using RemoteLib.Networking;
 using System.Net;
+using System.Windows.Media;
 
 namespace TVRemoteGUI.Windows {
     /// <summary>
@@ -31,24 +32,15 @@ namespace TVRemoteGUI.Windows {
             mPlayer.Source = new Uri ( @"C:\Users\Brayden\Videos\Basketball Movie\BasketballSequence.avi" );
             mPlayer.Play ();
 
-            var ar = new VideoDiscoverer ( DiscoverType.Downloads );
-            new Thread ( ar.Discover ).Start ();
-            ar.VideoDiscovered += AddVideos;
         }
 
         void AddVideos ( object sender, VideoDiscoveredArgs args ) {
-            if ( VideoFilter.IsInFilter ( args.FileLocation ) ) {
+            if ( VideoFilter.IsInFilter ( args.Video.Location ) ) {
                 return;
             }
 
 
-            //TODO: not make it do multiple stuffs.
-
-            if ( lstVideos.Items.Contains ( args.FileLocation ) ) {
-                // return;
-            }
-
-            lstVideos.Dispatcher.Invoke ( new Action ( () => lstVideos.Items.Add ( args.FileLocation ) ) );
+            lstVideos.Dispatcher.Invoke ( new Action ( () => lstVideos.Items.Add ( args.Video ) ) );
         }
 
         private void lstVideos_MouseDoubleClick ( object sender, System.Windows.Input.MouseButtonEventArgs e ) {
@@ -109,11 +101,41 @@ namespace TVRemoteGUI.Windows {
              ) );
         }
 
+        private object _defaultContent;
+
         void PacketRecieved ( object sender, Packet.PacketEventArgs args ) {
             if ( args.Packet is PacketControl ) {
                 PacketControl ctrl = args.Packet as PacketControl;
+
+                if ( mPlayer != null ) {
+                    switch ( ctrl.Control ) {
+                        case ControlType.FullScreen:
+
+                            if ( _defaultContent == null ) {
+                                _defaultContent = Content;
+                            }
+
+                            if ( Content == mPlayer ) {
+                                this.Background = Brushes.Transparent;
+                                this.Content = _defaultContent;
+                            } else {
+                                this.Background = Brushes.Black;
+                                this.Content = mPlayer;
+                            }
+                            break;
+                    }
+                }
             } else if ( args.Packet is PacketVideo ) {
                 PacketVideo pack = args.Packet as PacketVideo;
+                Logger.Log ( "Recieved video request" );
+                if ( pack.VideoID == -1 ) {
+
+                    var ar = new VideoDiscoverer ( DiscoverType.Downloads );
+                    new Thread ( ar.Discover ).Start ();
+                    ar.VideoDiscovered += AddVideos;
+
+                    lstVideos.Dispatcher.Invoke ( new Action ( () => lstVideos.Items.Clear () ) );
+                }
             }
         }
 

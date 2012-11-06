@@ -97,14 +97,14 @@ namespace TVRemoteGUI.Windows.Interop {
         /// <summary>
         /// Gets the file location.
         /// </summary>
-        public string FileLocation { get; private set; }
+        public Video Video { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="VideoDiscoveredArgs"/> class.
         /// </summary>
         /// <param name="location">The location of the file.</param>
         public VideoDiscoveredArgs ( string location ) {
-            FileLocation = location;
+            Video = new Video ( location );
         }
 
     }

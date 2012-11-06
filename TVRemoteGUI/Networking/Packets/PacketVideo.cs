@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ComputerRemote.Networking;
+using TVRemoteGUI.Windows.Interop;
 
 namespace TVRemoteGUI.Networking.Packets {
     /// <summary>
@@ -13,9 +14,9 @@ namespace TVRemoteGUI.Networking.Packets {
 
         public int VideoID { get; private set; }
 
-        public string Video { get; set; }
+        public Video Video { get; set; }
 
-        public PacketVideo ( string video ) {
+        public PacketVideo ( Video video ) {
             Video = video;
         }
     
@@ -34,7 +35,8 @@ namespace TVRemoteGUI.Networking.Packets {
         }
 
         public override void WritePacket ( ComputerRemote.Client c ) {
-            _data = Packet.GetString ( Video );
+            _data = Packet.GetString ( Video.Location )
+                    .Concat(Packet.GetString( Video.Length.ToString("mm:ss") ) ).ToArray();
         }
     }
 }
