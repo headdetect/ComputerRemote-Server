@@ -19,6 +19,10 @@ namespace TVRemoteGUI.Networking.Packets {
         public PacketVideo ( Video video ) {
             Video = video;
         }
+
+        public PacketVideo () {
+            //Read-Only
+        }
     
 
         public override byte PacketID {
@@ -36,7 +40,7 @@ namespace TVRemoteGUI.Networking.Packets {
 
         public override void WritePacket ( ComputerRemote.Client c ) {
             _data = Packet.GetString ( Video.Location )
-                    .Concat(Packet.GetString( Video.Length.ToString("mm:ss") ) ).ToArray();
+                    .Concat(Packet.GetString( Video.Length.ToString("mm\\:ss") ) ).ToArray();
         }
     }
 }

@@ -19,6 +19,7 @@ namespace TVRemoteGUI.Windows {
 
         private Server _server;
         private MultiCast _castServer;
+        private Client _client;
 
         public VideoWindow () {
 
@@ -39,8 +40,12 @@ namespace TVRemoteGUI.Windows {
                 return;
             }
 
+            if ( _client != null ) {
+                _client.PacketQueue.Enqueue ( new PacketVideo ( args.Video ) );
+            }
 
-            lstVideos.Dispatcher.Invoke ( new Action ( () => lstVideos.Items.Add ( args.Video ) ) );
+
+            lstVideos.Dispatcher.Invoke ( new Action ( () => lstVideos.Items.Add ( args.Video.Location ) ) );
         }
 
         private void lstVideos_MouseDoubleClick ( object sender, System.Windows.Input.MouseButtonEventArgs e ) {
@@ -106,24 +111,35 @@ namespace TVRemoteGUI.Windows {
         void PacketRecieved ( object sender, Packet.PacketEventArgs args ) {
             if ( args.Packet is PacketControl ) {
                 PacketControl ctrl = args.Packet as PacketControl;
-
+                
                 if ( mPlayer != null ) {
-                    switch ( ctrl.Control ) {
-                        case ControlType.FullScreen:
+                    mPlayer.Dispatcher.BeginInvoke ( new Action ( () => {
+                        switch ( ctrl.Control ) {
+                            case ControlType.Play:
+                                mPlayer.Source = new Uri ( ctrl.ValueString );
+                                mPlayer.Play ();
+                                break;
+                            case ControlType.Pause:
+                                if ( mPlayer.HasVideo && mPlayer.CanPause ) {
+                                    mPlayer.Pause ();
+                                }
+                                break;
+                            case ControlType.FullScreen:
 
-                            if ( _defaultContent == null ) {
-                                _defaultContent = Content;
-                            }
+                                if ( _defaultContent == null ) {
+                                    _defaultContent = Content;
+                                }
 
-                            if ( Content == mPlayer ) {
-                                this.Background = Brushes.Transparent;
-                                this.Content = _defaultContent;
-                            } else {
-                                this.Background = Brushes.Black;
-                                this.Content = mPlayer;
-                            }
-                            break;
-                    }
+                                if ( Content == mPlayer ) {
+                                    this.Background = Brushes.Transparent;
+                                    this.Content = _defaultContent;
+                                } else {
+                                    this.Background = Brushes.Black;
+                                    this.Content = mPlayer;
+                                }
+                                break;
+                        }
+                    } ) );
                 }
             } else if ( args.Packet is PacketVideo ) {
                 PacketVideo pack = args.Packet as PacketVideo;
@@ -140,10 +156,20 @@ namespace TVRemoteGUI.Windows {
         }
 
         void Client_ClientLeft ( object sender, Client.ClientConnectionEventArgs e ) {
-            Logger.Log ( "Client disconnected (" + ( (IPEndPoint) e.Client.ClientSocket.Client.RemoteEndPoint ).Address.ToString () + ")" );
+            if ( e.Client == _client ) {
+                _client = null;
+            }
+
+            Logger.Log ( "Client disconnected" );
         }
 
         void Client_ClientJoined ( object sender, Client.ClientConnectionEventArgs e ) {
+            if ( _client == null ) {
+                _client = e.Client;
+            } else {
+                e.Client.Disconnect ();
+                return;
+            }
             Logger.Log ( "Client connected (" + ( (IPEndPoint) e.Client.ClientSocket.Client.RemoteEndPoint ).Address + ")" );
         }
     }

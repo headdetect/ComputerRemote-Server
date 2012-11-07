@@ -12,6 +12,8 @@ namespace TVRemoteGUI.Networking.Packets {
 
         public int Value { get; private set; }
 
+        public string ValueString { get; private set; }
+
         public override byte PacketID {
             get { return 0x0a; }
         }
@@ -25,6 +27,9 @@ namespace TVRemoteGUI.Networking.Packets {
             Control = (ControlType) Packet.ReadShort ( c.NStream );
             Value = -1;
             switch ( Control ) {
+                case ControlType.Play:
+                    ValueString = ReadString ( c.NStream );
+                    break;
                 case ControlType.Rewind:
                 case ControlType.Forward:
                     Value = Packet.ReadInt ( c.NStream );
