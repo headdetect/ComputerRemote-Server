@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using RemoteLib;
 using TVRemoteGUI.Windows.Interop;
 using TVRemoteGUI.Windows.Utils;
 using ComputerRemote.Networking;

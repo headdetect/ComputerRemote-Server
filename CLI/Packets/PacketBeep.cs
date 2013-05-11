@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ComputerRemote.Networking;
+using RemoteLib;
+using RemoteLib.Networking;
 
 namespace CLI.Packets {
     public class PacketBeep : Packet {
@@ -14,10 +16,10 @@ namespace CLI.Packets {
             get { return new byte[0]; }
         }
 
-        public override void ReadPacket ( ComputerRemote.Client c ) {
+        public override void ReadPacket ( Client c ) {
         }
 
-        public override void WritePacket ( ComputerRemote.Client c ) {
+        public override void WritePacket ( Client c ) {
         }
     }
 }

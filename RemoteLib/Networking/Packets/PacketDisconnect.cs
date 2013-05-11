@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using RemoteLib;
+using RemoteLib.Networking;
 
 namespace ComputerRemote.Networking.Packets {
     public class PacketDisconnect : Packet {

@@ -5,6 +5,7 @@ using System.Text;
 using ComputerRemote.CLI.Utils;
 using CLI.Packets;
 using ComputerRemote.Networking;
+using RemoteLib;
 using RemoteLib.Networking;
 using System.Net;
 using System.Threading;

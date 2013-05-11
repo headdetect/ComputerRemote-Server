@@ -32,7 +32,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Globalization;
-using ComputerRemote.IO;
+using RemoteLib.IO;
 
 namespace TVRemoteGUI.Windows.Utils {
     /// <summary>

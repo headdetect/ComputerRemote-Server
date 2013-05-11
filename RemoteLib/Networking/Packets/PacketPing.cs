@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using RemoteLib;
+using RemoteLib.Networking;
 
 namespace ComputerRemote.Networking.Packets {
     public class PacketPing : Packet {

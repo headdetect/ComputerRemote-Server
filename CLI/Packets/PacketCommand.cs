@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using ComputerRemote.Networking;
 using System.IO;
+using RemoteLib;
+using RemoteLib.Networking;
 
 namespace CLI.Packets {
     public class PacketCommand : Packet {
@@ -30,11 +32,11 @@ namespace CLI.Packets {
             get { return _data; }
         }
 
-        public override void ReadPacket ( ComputerRemote.Client c ) {
+        public override void ReadPacket ( Client c ) {
             Command = Packet.ReadString ( c.NStream );
         }
 
-        public override void WritePacket ( ComputerRemote.Client c ) {
+        public override void WritePacket ( Client c ) {
             _data = Packet.GetString ( Result );
         }
     }

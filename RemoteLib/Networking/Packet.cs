@@ -2,9 +2,10 @@ using System;
 using System.Text;
 using System.Net;
 using System.IO;
+using ComputerRemote;
 using ComputerRemote.Networking.Packets;
 
-namespace ComputerRemote.Networking {
+namespace RemoteLib.Networking {
 
     /// <summary>
     /// A class containing many tools for packet manipulation. Packet inherentence begins here.
@@ -42,7 +43,7 @@ namespace ComputerRemote.Networking {
         public static void RegisterPacket ( Type type, int id ) {
 
             if ( id > byte.MaxValue || id < byte.MinValue ) {
-                throw new ArgumentOutOfRangeException( "Id must be in bounds of byte size (0-254)" );
+                throw new ArgumentOutOfRangeException( "id", "Id must be in bounds of byte size (0-254)" );
             }
 
             if ( id >= 0 && id <= 2 ) {
@@ -258,6 +259,12 @@ namespace ComputerRemote.Networking {
             return Encoding.UTF8.GetString(bytes, start, count);
         }
 
+        /// <summary>
+        /// Reads a string from the specified stream.
+        /// </summary>
+        /// <param name="mStream">The m stream.</param>
+        /// <param name="start">The start.</param>
+        /// <returns></returns>
         public static string ReadString ( Stream mStream, int start = 0 ) {
             int len = ReadInt( mStream );
 
@@ -346,11 +353,11 @@ namespace ComputerRemote.Networking {
             public Packet Packet { get; set; }
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="PacketRecievedEventArgs"/> class.
+            /// Initializes a new instance of the <see cref="PacketEventArgs"/> class.
             /// </summary>
             /// <param name="packet">The packet.</param>
             public PacketEventArgs ( Packet packet ) {
-                this.Packet = packet;
+                Packet = packet;
             }
         }
 

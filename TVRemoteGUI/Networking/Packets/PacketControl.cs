@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using ComputerRemote.Networking;
 using System.IO;
+using RemoteLib;
+using RemoteLib.Networking;
 
 namespace TVRemoteGUI.Networking.Packets {
     public class PacketControl : Packet {
@@ -23,7 +25,7 @@ namespace TVRemoteGUI.Networking.Packets {
             get { return new byte[ 0 ]; }
         }
 
-        public override void ReadPacket ( ComputerRemote.Client c ) {
+        public override void ReadPacket ( Client c ) {
             Control = (ControlType) Packet.ReadShort ( c.NStream );
             Value = -1;
             switch ( Control ) {
@@ -38,7 +40,7 @@ namespace TVRemoteGUI.Networking.Packets {
             }
         }
 
-        public override void WritePacket ( ComputerRemote.Client c ) {
+        public override void WritePacket ( Client c ) {
             throw new IOException ( "Is a read-only packet" ); //For now
         }
 

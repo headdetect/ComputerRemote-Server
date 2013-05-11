@@ -5,14 +5,12 @@ using System.Text;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading;
-using ComputerRemote.IO;
 
 namespace RemoteLib.Networking {
 
     public class MultiCast : IDisposable {
 
-        private Socket castSocket;
-
+        private readonly Socket castSocket;
 
         private bool run;
 

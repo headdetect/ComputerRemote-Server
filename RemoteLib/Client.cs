@@ -2,10 +2,10 @@ using System;
 using System.Net.Sockets;
 using System.Collections.Generic;
 using System.Threading;
-using ComputerRemote.Networking;
 using System.IO;
+using RemoteLib.Networking;
 
-namespace ComputerRemote {
+namespace RemoteLib {
     public class Client {
 
         /// <summary>

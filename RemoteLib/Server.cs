@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Net;
-using System.Net.NetworkInformation;
-using ComputerRemote.IO;
+using RemoteLib.IO;
 
-namespace ComputerRemote {
+namespace RemoteLib {
     public class Server {
-        private TcpListener mListener;
+
+        private readonly TcpListener mListener;
         private bool _shuttingDown;
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace ComputerRemote {
         /// Initializes a new instance of the <see cref="Server"/> class.
         /// </summary>
         public Server () {
-            Clients = new List<Client>( 24 );
+            Clients = new List<Client>( 255 );
             IPEndPoint iep = new IPEndPoint( IPAddress.Any, 45903 );
             mListener = new TcpListener( iep );
 
@@ -59,15 +59,21 @@ namespace ComputerRemote {
 
         void CallBack ( IAsyncResult result ) {
 
+            Client client = null;
+
             try {
 
-                Client client = new Client( mListener.EndAcceptTcpClient( result ) ); //Thread stuck until client connects
+                client = new Client( mListener.EndAcceptTcpClient( result ) ); //Thread stuck until client connects
                 Clients.Add( client );
                 client.StartClient();
-                
             }
             catch ( Exception e ) {
+#if DEBUG
                 ObjectOutput.Write( e );
+#endif
+                if(client != null) {
+                    client.Disconnect ();
+                }
             }
 
             if ( !_shuttingDown )

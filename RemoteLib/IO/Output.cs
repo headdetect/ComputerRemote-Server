@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace ComputerRemote.IO {
+namespace RemoteLib.IO {
+
+    /// <summary>
+    /// A raw output stream of raw objects (Usually strings). Mainly used for debugging. 
+    /// </summary>
     public class ObjectOutput {
 
         /// <summary>

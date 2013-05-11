@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
+﻿using System.IO;
 using ComputerRemote;
-using ComputerRemote.Networking;
 
-namespace ComputerRemote.Networking {
+namespace RemoteLib.Networking {
     public class PacketReader {
 
         /// <summary>
@@ -17,8 +12,8 @@ namespace ComputerRemote.Networking {
         /// </value>
         public bool CanRead { get; set; }
 
-        private BinaryReader mReader;
-        private Client c;
+        private readonly BinaryReader mReader;
+        private readonly Client c;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PacketReader"/> class.
