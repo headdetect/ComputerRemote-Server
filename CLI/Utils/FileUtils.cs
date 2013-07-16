@@ -28,6 +28,7 @@
 using System.IO;
 using System.Net;
 using System;
+using CLI.Utils;
 
 namespace ComputerRemote.CLI.Utils {
 

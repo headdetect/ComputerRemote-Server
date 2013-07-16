@@ -6,7 +6,7 @@ using System.Windows.Forms.VisualStyles;
 
 namespace TVRemoteGUI.Windows.Utils {
 
-    internal class Natives {
+    internal class NativesMethods {
 
         #region Consts
 

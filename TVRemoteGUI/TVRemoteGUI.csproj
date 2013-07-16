@@ -11,7 +11,8 @@
     <RootNamespace>TVRemoteGUI</RootNamespace>
     <AssemblyName>TVRemoteGUI</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -68,7 +69,7 @@
     <Compile Include="Windows\Utils\GraphicsExtention.cs" />
     <Compile Include="Windows\Utils\Logger.cs" />
     <Compile Include="Windows\Utils\Margins.cs" />
-    <Compile Include="Windows\Utils\Natives.cs" />
+    <Compile Include="Windows\Utils\NativesMethods.cs" />
     <Compile Include="Windows\Utils\Paramaters.cs" />
     <Compile Include="Windows\Utils\RECT.cs" />
     <Compile Include="Windows\Utils\TypeCollection.cs" />
@@ -105,6 +106,7 @@
     <EmbeddedResource Include="Windows\Utils\AeroForm.resx">
       <DependentUpon>AeroForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

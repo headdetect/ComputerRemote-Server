@@ -1,10 +1,8 @@
-﻿using System;
-using System.IO;
-using System.Collections.Generic;
-using RemoteLib;
-using RemoteLib.Networking;
+﻿using System.IO;
+using System.Net.Sockets;
+using RemoteLib.Net.TCP;
 
-namespace ComputerRemote.Networking.Packets {
+namespace RemoteLib.Net.Packets {
     public class PacketDisconnect : Packet {
 
         /// <summary>
@@ -45,16 +43,16 @@ namespace ComputerRemote.Networking.Packets {
             get { return 0x01; }
         }
 
-        public override void ReadPacket ( Client c ) {
+        public override void ReadPacket ( Socket c ) {
             throw new IOException( "Is a write only packet" );
         }
 
-        public override void WritePacket ( Client c ) {
+        public override void WritePacket () {
 
             //Even though it is sent to the client. The client will still be disconnected.
             //This gives the client a reason to why it was disconnected.
 
-            _data =  Packet.GetString( DisconnectReason );
+            _data =  PacketReader.GetString( DisconnectReason );
         }
 
         #endregion

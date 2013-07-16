@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ComputerRemote.Networking;
-using System.IO;
-using RemoteLib;
-using RemoteLib.Networking;
+﻿using System.IO;
+using RemoteLib.Net;
+using System.Net.Sockets;
 
-namespace TVRemoteGUI.Networking.Packets {
-    public class PacketControl : Packet {
+namespace TVRemoteGUI.Networking.Packets
+{
+    public class PacketControl : Packet
+    {
 
         public ControlType Control { get; private set; }
 
@@ -16,37 +13,43 @@ namespace TVRemoteGUI.Networking.Packets {
 
         public string ValueString { get; private set; }
 
-        public override byte PacketID {
+        public override byte PacketID
+        {
             get { return 0x0a; }
         }
 
 
-        public override byte[] DataWritten {
-            get { return new byte[ 0 ]; }
+        public override byte[] DataWritten
+        {
+            get { return new byte[0]; }
         }
 
-        public override void ReadPacket ( Client c ) {
-            Control = (ControlType) Packet.ReadShort ( c.NStream );
+        public override void ReadPacket(Socket c)
+        {
+            Control = (ControlType)PacketReader.ReadShort(c);
             Value = -1;
-            switch ( Control ) {
+            switch (Control)
+            {
                 case ControlType.Play:
-                    ValueString = ReadString ( c.NStream );
+                    ValueString = PacketReader.ReadString(c);
                     break;
                 case ControlType.Rewind:
                 case ControlType.Forward:
-                    Value = Packet.ReadInt ( c.NStream );
+                    Value = PacketReader.ReadInt(c);
                     break;
 
             }
         }
 
-        public override void WritePacket ( Client c ) {
-            throw new IOException ( "Is a read-only packet" ); //For now
+        public override void WritePacket()
+        {
+            throw new IOException("Is a read-only packet"); //For now
         }
 
     }
 
-    public enum ControlType {
+    public enum ControlType
+    {
 
         FullScreen,
 

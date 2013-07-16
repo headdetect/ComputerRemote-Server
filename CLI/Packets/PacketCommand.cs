@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ComputerRemote.Networking;
-using System.IO;
-using RemoteLib;
-using RemoteLib.Networking;
+﻿using RemoteLib.Net;
+using System.Net.Sockets;
 
 namespace CLI.Packets {
     public class PacketCommand : Packet {
@@ -32,12 +26,12 @@ namespace CLI.Packets {
             get { return _data; }
         }
 
-        public override void ReadPacket ( Client c ) {
-            Command = Packet.ReadString ( c.NStream );
+        public override void ReadPacket ( Socket c ) {
+            Command = PacketReader.ReadString ( c );
         }
 
-        public override void WritePacket ( Client c ) {
-            _data = Packet.GetString ( Result );
+        public override void WritePacket () {
+            _data = PacketReader.GetString ( Result );
         }
     }
 }

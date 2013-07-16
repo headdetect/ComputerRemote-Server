@@ -63,7 +63,7 @@ namespace TVRemoteGUI.Windows.Utils {
         /// Updates the glass.
         /// </summary>
         public void UpdateGlass () {
-            if ( DesignerProperties.GetIsInDesignMode( this ) && !Natives.CanUseAero ) {
+            if ( DesignerProperties.GetIsInDesignMode( this ) && !NativesMethods.CanUseAero ) {
                 Background = SystemColors.WindowBrush;
                 return;
             }
@@ -83,7 +83,7 @@ namespace TVRemoteGUI.Windows.Utils {
 
                 if (_winSource.CompositionTarget != null ) {
                     _winSource.CompositionTarget.BackgroundColor = Colors.Transparent;
-                    Natives.ExtendGlass( _winSource.Handle, _glassArea );
+                    NativesMethods.ExtendGlass( _winSource.Handle, _glassArea );
                 }
             }
         }

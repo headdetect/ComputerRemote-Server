@@ -1,40 +1,13 @@
-﻿/*
-	Copyright (c) 2012 Brayden (headdetect)
-
-	Permission is hereby granted, free of charge, 
-	to any person obtaining a copy of this software
-	and associated documentation files (the "Software"),
-	to deal in the Software without restriction, including
-	without limitation the rights to use, copy, modify,
-	merge, publish, distribute, sublicense, and/or sell
-	copies of the Software, and to permit persons to whom
-	the Software is furnished to do so, subject to the
-	following conditions:
-
-	The above copyright notice and this permission notice
-	shall be included in all copies or substantial portions
-	of the Software.
-
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
-	ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
-	TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-	PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
-	SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-	CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
-	CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-	IN THE SOFTWARE.
-*/
-
-using System;
+﻿using System;
+using System.Drawing;
 using System.Threading;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Globalization;
-using RemoteLib.IO;
+using ComputerRemote.CLI.Utils;
 
-namespace ComputerRemote.CLI.Utils {
+namespace CLI.Utils {
     /// <summary>
     /// Logger Utility
     /// </summary>
@@ -91,17 +64,6 @@ namespace ComputerRemote.CLI.Utils {
             _fileFlusher = new Thread( FlushToFile );
             _fileFlusher.Start();
 
-            ObjectOutput.MessageEventStream += ( sender, args ) => {
-                if ( args.Object is Exception ) {
-                    LogError( args.Object as Exception );
-                }
-                else {
-                    Log( args.Object.ToString() );
-                }
-
-
-            };
-
         }
 
         /// <summary>
@@ -118,22 +80,22 @@ namespace ComputerRemote.CLI.Utils {
         /// <param name="message">The message to be logged</param>
         /// <param name="logType">The log type</param>
         public static void Log ( string message, LogType logType = LogType.Normal ) {
-            ConsoleColor one = ConsoleColor.White;
+            Color one = Color.Black;
             switch ( logType ) {
                 case LogType.Info:
-                    one = ConsoleColor.Blue;
+                    one = Color.Blue;
                     break;
                 case LogType.Debug:
-                    one = ConsoleColor.Gray;
+                    one = Color.Gray;
                     break;
                 case LogType.Error:
-                    one = ConsoleColor.Red;
+                    one = Color.Red;
                     break;
                 case LogType.Warning:
-                    one = ConsoleColor.Yellow;
+                    one = Color.Yellow;
                     break;
             }
-            Log( message, one, ConsoleColor.Black, logType );
+            Log( message, one, Color.White, logType );
         }
 
         /// <summary>
@@ -143,7 +105,7 @@ namespace ComputerRemote.CLI.Utils {
         /// <param name="textColor">Color of the text</param>
         /// <param name="bgColor">Color of the background</param> 
         /// <param name="logType">The log type</param>
-        public static void Log ( string message, ConsoleColor textColor, ConsoleColor bgColor, LogType logType = LogType.Normal ) {
+        public static void Log ( string message, Color textColor, Color bgColor, LogType logType = LogType.Normal ) {
             FlushQueue.Enqueue( new LogEventArgs( message, logType, textColor, bgColor ) );
         }
 
@@ -283,13 +245,13 @@ namespace ComputerRemote.CLI.Utils {
         /// <summary>
         /// Get or set the color of the text
         /// </summary>
-        public ConsoleColor TextColor { get; set; }
+        public Color TextColor { get; set; }
 
 
         /// <summary>
         /// Get or set the color of the background
         /// </summary>
-        public ConsoleColor BackgroundColor { get; set; }
+        public Color BackgroundColor { get; set; }
 
         /// <summary>
         /// Default constructor for creating a log event
@@ -299,8 +261,8 @@ namespace ComputerRemote.CLI.Utils {
         public LogEventArgs ( string log, LogType logType ) {
             Message = log;
             LogType = logType;
-            TextColor = ConsoleColor.White;
-            BackgroundColor = ConsoleColor.Black;
+            TextColor = Color.White;
+            BackgroundColor = Color.Black;
         }
 
         /// <summary>
@@ -310,7 +272,7 @@ namespace ComputerRemote.CLI.Utils {
         /// <param name="logType">Type of log event</param>
         /// <param name="textColor">Color of the text</param>
         /// <param name="bgColor">Color of the background</param>
-        public LogEventArgs ( string log, LogType logType, ConsoleColor textColor, ConsoleColor bgColor ) {
+        public LogEventArgs ( string log, LogType logType, Color textColor, Color bgColor ) {
             Message = log;
             LogType = logType;
             TextColor = textColor;
@@ -340,7 +302,7 @@ namespace ComputerRemote.CLI.Utils {
         /// </summary>
         /// <param name="exception">The exception.</param>
         public ErrorLogEventArgs ( Exception exception )
-            : base( exception.Message + "\n" + exception.StackTrace, LogType.Error, ConsoleColor.Red, ConsoleColor.Black ) {
+            : base( exception.Message + "\n" + exception.StackTrace, LogType.Error, Color.Red, Color.White ) {
             if ( exception == null )
                 throw new ArgumentNullException( "exception", "exception is null." );
 

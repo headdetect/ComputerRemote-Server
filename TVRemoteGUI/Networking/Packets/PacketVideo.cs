@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ComputerRemote.Networking;
-using RemoteLib;
-using RemoteLib.Networking;
+﻿using System.Linq;
+using System.Net.Sockets;
+using RemoteLib.Net;
 using TVRemoteGUI.Windows.Interop;
 
 namespace TVRemoteGUI.Networking.Packets {
+
     /// <summary>
     /// A packet for sending reqests for videos,
     /// A packet for reading a list of videos that can be played.
@@ -36,13 +33,13 @@ namespace TVRemoteGUI.Networking.Packets {
             get { return _data; }
         }
 
-        public override void ReadPacket ( Client c ) {
-            VideoID = Packet.ReadInt ( c.NStream );
+        public override void ReadPacket ( Socket c ) {
+            VideoID = PacketReader.ReadInt(c);
         }
 
-        public override void WritePacket ( Client c ) {
-            _data = Packet.GetString ( Video.Location )
-                    .Concat(Packet.GetString( Video.Length.ToString("mm\\:ss") ) ).ToArray();
+        public override void WritePacket () {
+            _data = PacketReader.GetString(Video.Location)
+                    .Concat(PacketReader.GetString(Video.Length.ToString("mm\\:ss"))).ToArray();
         }
     }
 }
