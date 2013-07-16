@@ -8,17 +8,6 @@ namespace CLI
     {
         static void Main(string[] args)
         {
-            foreach (string t in args)
-            {
-                if (t.IndexOf("--debug", StringComparison.Ordinal) != -1)
-                {
-                    Paramaters.DebugEnabled = true;
-                }
-                else if (t.IndexOf("--nocast", StringComparison.Ordinal) != -1)
-                {
-                    Paramaters.Multicating = false;
-                }
-            }
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(true);

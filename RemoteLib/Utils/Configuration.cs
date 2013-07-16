@@ -17,15 +17,15 @@ namespace RemoteLib.Utils
             get
             {
                 if (key == null)
-                    return null;
+                    return new ConfigBlob();
                 for (int i = 0; i < Blobs.Count; i++)
-                    if (Blobs[i].Key == key)
+                    if (Blobs[i].Key.Equals(key))
                         return Blobs[i];
-                return null;
+                return new ConfigBlob(key, null);
             }
             set
             {
-                if (this[key] == null)
+                if (this[key].Value == null && !KeyExists(key))
                 {
                     Blobs.Add(value);
                 }
@@ -35,7 +35,6 @@ namespace RemoteLib.Utils
                 }
             }
         }
-
 
         public Configuration(string file)
         {
@@ -69,8 +68,19 @@ namespace RemoteLib.Utils
             using (var reader = File.OpenText(FilePath))
             {
                 string read = reader.ReadToEnd();
-                Blobs = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ConfigBlob>>(read);
+                var list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ConfigBlob>>(read);
+
+                if (list != null)
+                {
+                    Blobs.Clear();
+                    Blobs.AddRange(list);
+                }
             }
+        }
+
+        public bool KeyExists(object key)
+        {
+            return Blobs.Any(blob => blob.Key.Equals(key));
         }
 
 
@@ -80,5 +90,28 @@ namespace RemoteLib.Utils
     {
         public object Value { get; set; }
         public object Key { get; set; }
+
+        public ConfigBlob()
+        {
+        }
+
+        public ConfigBlob(object key, object value)
+        {
+            Value = value;
+            Key = key;
+        }
+
+        public T AsPrimitive<T>() where T : struct
+        {
+            if (Value == null) return default(T);
+            if (Value is T)
+            {
+                return (T)Value;
+            }
+            else
+            {
+                return default(T);
+            }
+        }
     }
 }

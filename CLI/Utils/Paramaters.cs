@@ -1,14 +1,31 @@
-﻿using System;
+﻿using RemoteLib.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ComputerRemote.CLI.Utils {
-    public class Paramaters {
+namespace ComputerRemote.CLI.Utils
+{
+    public class Paramaters
+    {
 
-        static Paramaters () {
-            DebugEnabled = true;
-            Multicating = true;
+
+
+        static Paramaters()
+        {
+            Configuration config = new Configuration("options.json");
+
+            if (!config.KeyExists("Debug"))
+                config["Debug"] = new ConfigBlob("Debug", true);
+
+            if (!config.KeyExists("Multicast"))
+                config["Multicast"] = new ConfigBlob("Multicast", true);
+
+            DebugEnabled = config["Debug"].AsPrimitive<bool>();
+            Multicating = config["Multicast"].AsPrimitive<bool>();
+
+            config.Save();
+
         }
 
 
