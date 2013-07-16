@@ -12,26 +12,28 @@ namespace RemoteLib.Utils
 
         public string FilePath { get; set; }
 
-        public ConfigBlob this[object key]
+        public object this[object key]
         {
             get
             {
                 if (key == null)
-                    return new ConfigBlob();
+                    return null;
                 for (int i = 0; i < Blobs.Count; i++)
                     if (Blobs[i].Key.Equals(key))
-                        return Blobs[i];
-                return new ConfigBlob(key, null);
+                        return Blobs[i].Value;
+                return null;
             }
             set
             {
-                if (this[key].Value == null && !KeyExists(key))
+                if (this[key] == null && !KeyExists(key))
                 {
-                    Blobs.Add(value);
+                    Blobs.Add(new ConfigBlob(key, value));
                 }
                 else
                 {
-                    this[key].Value = value.Value;
+                    for (int i = 0; i < Blobs.Count; i++)
+                        if (Blobs[i].Key.Equals(key))
+                            Blobs[i].Value = value;
                 }
             }
         }
@@ -82,8 +84,6 @@ namespace RemoteLib.Utils
         {
             return Blobs.Any(blob => blob.Key.Equals(key));
         }
-
-
     }
 
     public class ConfigBlob

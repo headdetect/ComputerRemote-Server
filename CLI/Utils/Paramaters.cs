@@ -21,8 +21,8 @@ namespace ComputerRemote.CLI.Utils
             if (!config.KeyExists("Multicast"))
                 config["Multicast"] = new ConfigBlob("Multicast", true);
 
-            DebugEnabled = config["Debug"].AsPrimitive<bool>();
-            Multicating = config["Multicast"].AsPrimitive<bool>();
+            DebugEnabled = (bool)config["Debug"];
+            Multicating = (bool)config["Multicast"];
 
             config.Save();
 
