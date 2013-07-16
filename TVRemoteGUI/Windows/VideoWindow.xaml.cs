@@ -17,7 +17,7 @@ namespace TVRemoteGUI.Windows {
     /// </summary>
     public partial class VideoWindow {
 
-        private TCPServer _server;
+        private TcpRemoteServer _server;
         private Multicast _castServer;
         private TcpRemoteClient _client;
 
@@ -70,7 +70,7 @@ namespace TVRemoteGUI.Windows {
             Logger.Init ();
             Logger.OnRecieveLog += OnLog;
             Logger.OnRecieveErrorLog += OnLog;
-            _server = new TCPServer ();
+            _server = new TcpRemoteServer ();
             Packet.PacketRecieved += PacketRecieved;
 
             _server.Start ();

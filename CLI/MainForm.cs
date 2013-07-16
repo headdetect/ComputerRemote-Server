@@ -15,7 +15,7 @@ namespace CLI
 {
     public partial class MainForm : Form
     {
-        private TCPServer _server;
+        private TcpRemoteServer _server;
         private Multicast _cast;
         private WirelessMouse _mouse;
 
@@ -39,7 +39,7 @@ namespace CLI
             Logger.Init();
             Logger.OnRecieveLog += OnLog;
             Logger.OnRecieveErrorLog += OnError;
-            _server = new TCPServer();
+            _server = new TcpRemoteServer();
             Packet.PacketRecieved += Packet_PacketRecieved;
 
 

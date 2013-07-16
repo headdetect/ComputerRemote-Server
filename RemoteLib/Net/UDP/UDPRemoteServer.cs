@@ -41,7 +41,7 @@ namespace RemoteLib.Net.UDP
 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TCPServer"/> class.
+        /// Initializes a new instance of the <see cref="TcpRemoteServer"/> class.
         /// </summary>
         public UdpRemoteServer()
             : this(IPAddress.Any)
@@ -49,13 +49,13 @@ namespace RemoteLib.Net.UDP
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TCPServer"/> class.
+        /// Initializes a new instance of the <see cref="TcpRemoteServer"/> class.
         /// </summary>
         /// <param name="port">The port.</param>
         public UdpRemoteServer(int port) : this(IPAddress.Any, port) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TCPServer"/> class.
+        /// Initializes a new instance of the <see cref="TcpRemoteServer"/> class.
         /// </summary>
         /// <param name="bindToIp">The bind to ip.</param>
         public UdpRemoteServer(string bindToIp)
@@ -64,7 +64,7 @@ namespace RemoteLib.Net.UDP
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TCPServer"/> class.
+        /// Initializes a new instance of the <see cref="TcpRemoteServer"/> class.
         /// </summary>
         /// <param name="bindToIp">The the ip to bind the server to.</param>
         /// <param name="port">The port.</param>
@@ -74,7 +74,7 @@ namespace RemoteLib.Net.UDP
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TCPServer"/> class.
+        /// Initializes a new instance of the <see cref="TcpRemoteServer"/> class.
         /// </summary>
         /// <param name="address">The address to bind to.</param>
         public UdpRemoteServer(IPAddress address)
@@ -83,7 +83,7 @@ namespace RemoteLib.Net.UDP
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TCPServer"/> class.
+        /// Initializes a new instance of the <see cref="TcpRemoteServer"/> class.
         /// </summary>
         /// <param name="address">The address.</param>
         /// <param name="port">The port.</param>
@@ -132,7 +132,7 @@ namespace RemoteLib.Net.UDP
                 Clients.Add(client);
                 client.StartClient();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 if (client != null)
                 {

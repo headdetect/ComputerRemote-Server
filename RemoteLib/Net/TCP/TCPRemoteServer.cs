@@ -5,7 +5,7 @@ using System.Net;
 
 namespace RemoteLib.Net.TCP
 {
-    public class TCPServer
+    public class TcpRemoteServer
     {
 
         private const int _DEFAULT_PORT = 45903;
@@ -38,53 +38,53 @@ namespace RemoteLib.Net.TCP
 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TCPServer"/> class.
+        /// Initializes a new instance of the <see cref="TcpRemoteServer"/> class.
         /// </summary>
-        public TCPServer()
+        public TcpRemoteServer()
             : this(IPAddress.Any)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TCPServer"/> class.
+        /// Initializes a new instance of the <see cref="TcpRemoteServer"/> class.
         /// </summary>
         /// <param name="port">The port.</param>
-        public TCPServer(int port) : this(IPAddress.Any, port) { }
+        public TcpRemoteServer(int port) : this(IPAddress.Any, port) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TCPServer"/> class.
+        /// Initializes a new instance of the <see cref="TcpRemoteServer"/> class.
         /// </summary>
         /// <param name="bindToIp">The bind to ip.</param>
-        public TCPServer(string bindToIp)
+        public TcpRemoteServer(string bindToIp)
             : this(IPAddress.Parse(bindToIp))
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TCPServer"/> class.
+        /// Initializes a new instance of the <see cref="TcpRemoteServer"/> class.
         /// </summary>
         /// <param name="bindToIp">The the ip to bind the server to.</param>
         /// <param name="port">The port.</param>
-        public TCPServer(string bindToIp, int port)
+        public TcpRemoteServer(string bindToIp, int port)
             : this(IPAddress.Parse(bindToIp), port)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TCPServer"/> class.
+        /// Initializes a new instance of the <see cref="TcpRemoteServer"/> class.
         /// </summary>
         /// <param name="address">The address to bind to.</param>
-        public TCPServer(IPAddress address)
+        public TcpRemoteServer(IPAddress address)
             : this(address, _DEFAULT_PORT)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TCPServer"/> class.
+        /// Initializes a new instance of the <see cref="TcpRemoteServer"/> class.
         /// </summary>
         /// <param name="address">The address.</param>
         /// <param name="port">The port.</param>
-        public TCPServer(IPAddress address, int port)
+        public TcpRemoteServer(IPAddress address, int port)
         {
             Clients = new List<TcpRemoteClient>(255);
             IpEnd = new IPEndPoint(address, port);
@@ -123,7 +123,7 @@ namespace RemoteLib.Net.TCP
                 Clients.Add(client);
                 client.StartClient();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 if (client != null)
                 {
