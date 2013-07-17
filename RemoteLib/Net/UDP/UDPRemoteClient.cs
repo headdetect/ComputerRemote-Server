@@ -121,6 +121,7 @@ namespace RemoteLib.Net.UDP
 
 
                         Client.Send(bytes);
+                        Packet.OnPacketSent(p);
                         continue;
                     }
                     Thread.Sleep(5);

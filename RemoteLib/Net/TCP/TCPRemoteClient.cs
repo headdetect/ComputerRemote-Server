@@ -103,6 +103,8 @@ namespace RemoteLib.Net.TCP
 
                         NStream.WriteByte(p.PacketID);
                         NStream.Write(p.DataWritten, 0, p.DataWritten.Length);
+
+                        Packet.OnPacketSent(p);
                         continue;
                     }
                     Thread.Sleep(5);
