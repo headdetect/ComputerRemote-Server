@@ -8,20 +8,35 @@ namespace RemoteLib.Utils
 {
     public class Configuration
     {
+        /// <summary>
+        /// Gets or sets the blobs.
+        /// </summary>
+        /// <value>
+        /// The blobs.
+        /// </value>
         public List<ConfigBlob> Blobs { get; set; }
 
+        /// <summary>
+        /// Gets or sets the file path.
+        /// </summary>
+        /// <value>
+        /// The file path.
+        /// </value>
         public string FilePath { get; set; }
 
+        /// <summary>
+        /// Gets or sets the <see cref="System.Object"/> with the specified key.
+        /// </summary>
+        /// <value>
+        /// The <see cref="System.Object"/>.
+        /// </value>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
         public object this[object key]
         {
             get
             {
-                if (key == null)
-                    return null;
-                for (int i = 0; i < Blobs.Count; i++)
-                    if (Blobs[i].Key.Equals(key))
-                        return Blobs[i].Value;
-                return null;
+                return key == null ? null : (from t in Blobs where t.Key.Equals(key) select t.Value).FirstOrDefault();
             }
             set
             {
@@ -31,9 +46,8 @@ namespace RemoteLib.Utils
                 }
                 else
                 {
-                    for (int i = 0; i < Blobs.Count; i++)
-                        if (Blobs[i].Key.Equals(key))
-                            Blobs[i].Value = value;
+                    foreach (ConfigBlob blob in Blobs.Where(t => t.Key.Equals(key)))
+                        blob.Value = value;
                 }
             }
         }
@@ -72,11 +86,9 @@ namespace RemoteLib.Utils
                 string read = reader.ReadToEnd();
                 var list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ConfigBlob>>(read);
 
-                if (list != null)
-                {
-                    Blobs.Clear();
-                    Blobs.AddRange(list);
-                }
+                if (list == null) return;
+                Blobs.Clear();
+                Blobs.AddRange(list);
             }
         }
 
@@ -88,30 +100,53 @@ namespace RemoteLib.Utils
 
     public class ConfigBlob
     {
+        /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
+        /// <value>
+        /// The value.
+        /// </value>
         public object Value { get; set; }
+
+        /// <summary>
+        /// Gets or sets the key.
+        /// </summary>
+        /// <value>
+        /// The key.
+        /// </value>
         public object Key { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConfigBlob"/> class.
+        /// </summary>
         public ConfigBlob()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConfigBlob"/> class.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
         public ConfigBlob(object key, object value)
         {
             Value = value;
             Key = key;
         }
 
-        public T AsPrimitive<T>() where T : struct
+        /// <summary>
+        /// Returns the value of the blob as a struct
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T AsStructure<T>() where T : struct
         {
             if (Value == null) return default(T);
             if (Value is T)
             {
                 return (T)Value;
             }
-            else
-            {
-                return default(T);
-            }
+            return default(T);
         }
     }
 }

@@ -93,7 +93,7 @@ namespace RemoteLib.Net.UDP
             IpEnd = new IPEndPoint(address, port);
 
             //TODO: Support IPv6
-            mListener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Udp);
+            mListener = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         }
 
 
