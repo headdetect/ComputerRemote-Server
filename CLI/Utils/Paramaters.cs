@@ -1,15 +1,10 @@
 ﻿using RemoteLib.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace ComputerRemote.CLI.Utils
+namespace CLI.Utils
 {
     public class Paramaters
     {
-
-        private static Configuration config = new Configuration("options.json");
+        private static readonly Configuration config = new Configuration("options.json");
 
         static Paramaters()
         {

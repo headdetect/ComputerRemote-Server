@@ -12,7 +12,7 @@ namespace RemoteLib.Net.UDP
 
         private const int _DEFAULT_PORT = 5001;
 
-        private readonly Socket mListener;
+        private readonly UdpClient mListener;
         private bool _shuttingDown;
 
 
@@ -93,7 +93,7 @@ namespace RemoteLib.Net.UDP
             IpEnd = new IPEndPoint(address, port);
 
             //TODO: Support IPv6
-            mListener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Udp);
+            mListener = new UdpClient(AddressFamily.InterNetwork);
         }
 
 
@@ -114,11 +114,12 @@ namespace RemoteLib.Net.UDP
         {
             LocalIP = IpEnd.Address;
 
-            if (!_shuttingDown)
+            if (_shuttingDown)
                 throw new AccessViolationException(
                     "Server is already running. You must call stop before calling start again.");
-
-            mListener.BeginAccept(Callback, null);
+            
+            //mListener.Listen(1000);
+            mListener.BeginReceive(Callback, null);
         }
 
         void Callback(IAsyncResult result)
@@ -127,7 +128,8 @@ namespace RemoteLib.Net.UDP
             UdpRemoteClient client = null;
             try
             {
-                var socket = mListener.EndAccept(result);
+                var endpoint = IpEnd;
+                var socket = mListener.EndReceive(result, ref endpoint);
                 client = new UdpRemoteClient(socket);
                 Clients.Add(client);
                 client.StartClient();
