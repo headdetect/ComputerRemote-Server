@@ -31,7 +31,6 @@ namespace RemoteLib.Net.TCP
         {
             PacketReader.StartReadAsync();
             PacketWriter.StartWriteAsync();
-
             OnClientJoined();
         }
 
