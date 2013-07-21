@@ -25,17 +25,7 @@ namespace LibTests
 
             Assert.IsNotNull(connectToServerClient);
 
-            try
-            {
-               // connectToServerClient.Connect(ipEnd);
-            }
-            catch (Exception e)
-            {
-
-                Assert.Fail(e.Message);
-            }
-
-            prepareTestNetwork();
+            prepareTimeout();
 
             Assert.IsNotNull(connectToServerClient);
 
@@ -74,10 +64,14 @@ namespace LibTests
                 Assert.Fail("Method probably timed out\nMake sure a server is on to test the requests\n" + e.Message);
             }
         }
-        
-        private void prepareTestNetwork()
+
+        private void prepareTimeout()
         {
-            //ThreadPool.QueueUserWorkItem(a => Thread.Sleep(10000));
+            ThreadPool.QueueUserWorkItem(a =>
+            {
+                Thread.Sleep(10000);
+                connectToServerClient.Close();
+            });
         }
 
 
@@ -97,6 +91,6 @@ namespace LibTests
             };
         }
 
-        
+
     }
 }
