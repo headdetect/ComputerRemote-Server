@@ -17,21 +17,17 @@ namespace CLI.Packets {
 
         public PacketCommand () { }
 
-        public override byte PacketID {
+        public override byte PacketId {
             get { return 0x05; }
         }
 
-        private byte[] _data;
-        public override byte[] DataWritten {
-            get { return _data; }
+        public override void ReadPacket ( RemoteClient c )
+        {
+            Command = c.ReadString();
         }
 
-        public override void ReadPacket ( Socket c ) {
-            Command = PacketReader.ReadString ( c );
-        }
-
-        public override void WritePacket () {
-            _data = PacketReader.GetString ( Result );
+        public override void WritePacket (RemoteClient c) {
+            c.WriteString(Result);
         }
     }
 }

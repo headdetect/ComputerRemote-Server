@@ -6,3 +6,4 @@ obj
 TestResults
 *.suo
 _ReSharper.ComputerRemote/*
+/Remoter.sln.DotSettings.user

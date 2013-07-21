@@ -28,31 +28,17 @@ namespace RemoteLib.Net.Packets {
         #region Inhereted Members
 
 
-        private byte[] _data;
-        public override byte[] DataWritten {
-            get {
-                if ( _data == null ) {
-                    return new byte[0];
-                }
-
-                return _data;
-            }
-        }
-
-        public override byte PacketID {
+        public override byte PacketId {
             get { return 0x01; }
         }
 
-        public override void ReadPacket ( Socket c ) {
+        public override void ReadPacket ( RemoteClient c ) {
             throw new IOException( "Is a write only packet" );
         }
 
-        public override void WritePacket () {
-
-            //Even though it is sent to the client. The client will still be disconnected.
-            //This gives the client a reason to why it was disconnected.
-
-            _data =  PacketReader.GetString( DisconnectReason );
+        public override void WritePacket(RemoteClient c)
+        {
+            c.WriteString(DisconnectReason);
         }
 
         #endregion

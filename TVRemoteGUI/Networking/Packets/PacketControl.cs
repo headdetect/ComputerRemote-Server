@@ -13,35 +13,29 @@ namespace TVRemoteGUI.Networking.Packets
 
         public string ValueString { get; private set; }
 
-        public override byte PacketID
+        public override byte PacketId
         {
             get { return 0x0a; }
         }
 
-
-        public override byte[] DataWritten
+        public override void ReadPacket(RemoteClient c)
         {
-            get { return new byte[0]; }
-        }
-
-        public override void ReadPacket(Socket c)
-        {
-            Control = (ControlType)PacketReader.ReadShort(c);
+            Control = (ControlType)c.ReadShort();
             Value = -1;
             switch (Control)
             {
                 case ControlType.Play:
-                    ValueString = PacketReader.ReadString(c);
+                    ValueString = c.ReadString();
                     break;
                 case ControlType.Rewind:
                 case ControlType.Forward:
-                    Value = PacketReader.ReadInt(c);
+                    Value = c.ReadInt();
                     break;
 
             }
         }
 
-        public override void WritePacket()
+        public override void WritePacket(RemoteClient c)
         {
             throw new IOException("Is a read-only packet"); //For now
         }

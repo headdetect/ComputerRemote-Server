@@ -33,25 +33,19 @@ namespace CLI.Packets
 
         #region Inhereted Memebers
 
-        public override byte PacketID
+        public override byte PacketId
         {
             get { return 0x04; }
         }
 
-        private byte[] _data;
-        public override byte[] DataWritten
+        public override void ReadPacket(RemoteClient c)
         {
-            get { return _data; }
+            Message = c.ReadString();
         }
 
-        public override void ReadPacket(Socket c)
+        public override void WritePacket(RemoteClient c)
         {
-            Message = PacketReader.ReadString(c);
-        }
-
-        public override void WritePacket()
-        {
-            _data = PacketReader.GetString(Message);
+            c.WriteString(Message);
         }
 
         #endregion

@@ -47,8 +47,8 @@ namespace CLI
             Logger.Log("Server Started (" + _server.LocalIP + ")");
 
 
-            TcpRemoteClient.ClientJoined += Client_ClientJoined;
-            TcpRemoteClient.ClientLeft += Client_ClientLeft;
+            RemoteClient.ClientJoined += Client_ClientJoined;
+            RemoteClient.ClientLeft += Client_ClientLeft;
 
             _mouse = new WirelessMouse();
             _mouse.Start();
@@ -79,14 +79,14 @@ namespace CLI
             _server = null;
         }
 
-        void Client_ClientLeft(object sender, TcpRemoteClient.TcpClientConnectionEventArgs e)
+        void Client_ClientLeft(object sender, ClientConnectionEventArgs e)
         {
-            Logger.Log("Client disconnected (" + ((IPEndPoint)e.TcpRemoteClient.TcpClient.Client.RemoteEndPoint).Address + ")");
+            //Logger.Log("Client disconnected (" + ((IPEndPoint)e.RemoteClient..Client.RemoteEndPoint).Address + ")");
         }
 
-        void Client_ClientJoined(object sender, TcpRemoteClient.TcpClientConnectionEventArgs e)
+        void Client_ClientJoined(object sender, ClientConnectionEventArgs e)
         {
-            Logger.Log("Client connected (" + ((IPEndPoint)e.TcpRemoteClient.TcpClient.Client.RemoteEndPoint).Address + ")");
+            //Logger.Log("Client connected (" + ((IPEndPoint)e.RemoteClient.TcpClient.Client.RemoteEndPoint).Address + ")");
         }
 
         void Packet_PacketRecieved(object sender, Packet.PacketEventArgs e)
@@ -165,9 +165,9 @@ namespace CLI
                 string result = proc.StandardOutput.ReadToEnd();
                 Console.WriteLine(result);
 
-                foreach (TcpRemoteClient client in _server.Clients)
+                foreach (RemoteClient client in _server.Clients)
                 {
-                    client.PacketQueue.Enqueue(new PacketCommand(result));
+                    client.PacketWriter.EnqueuePacket(new PacketCommand(result));
                 }
             }
             catch (Exception ex)
@@ -207,7 +207,7 @@ namespace CLI
 
             foreach (TcpRemoteClient c in _server.Clients)
             {
-                c.PacketQueue.Enqueue(new PacketMessage(read));
+                c.PacketWriter.EnqueuePacket(new PacketMessage(read));
             }
 
             Logger.Log(read);

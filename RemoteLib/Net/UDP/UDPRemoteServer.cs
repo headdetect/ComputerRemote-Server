@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading;
@@ -9,12 +10,10 @@ namespace RemoteLib.Net.UDP
 {
     public class UdpRemoteServer
     {
-
         private const int _DEFAULT_PORT = 5001;
 
         private readonly UdpClient mListener;
         private bool _shuttingDown;
-
 
         /// <summary>
         /// Gets the clients.
@@ -22,7 +21,7 @@ namespace RemoteLib.Net.UDP
         /// <value>
         /// The clients.
         /// </value>
-        public List<UdpRemoteClient> Clients { get; private set; }
+        public Dictionary<string, UdpRemoteClient> Clients { get; private set; }
 
         /// <summary>
         /// Gets the local IP of the server.
@@ -36,15 +35,22 @@ namespace RemoteLib.Net.UDP
         /// <value>
         /// The ip end.
         /// </value>
-        public IPEndPoint IpEnd { get; private set; }
+        public IPEndPoint ServerEndPoint;
 
+        /// <summary>
+        /// Gets the port that the server is running on.
+        /// </summary>
+        /// <value>
+        /// The port.
+        /// </value>
+        public int Port { get; private set; }
 
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TcpRemoteServer"/> class.
         /// </summary>
         public UdpRemoteServer()
-            : this(IPAddress.Any)
+            : this(_DEFAULT_PORT)
         {
         }
 
@@ -52,48 +58,13 @@ namespace RemoteLib.Net.UDP
         /// Initializes a new instance of the <see cref="TcpRemoteServer"/> class.
         /// </summary>
         /// <param name="port">The port.</param>
-        public UdpRemoteServer(int port) : this(IPAddress.Any, port) { }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TcpRemoteServer"/> class.
-        /// </summary>
-        /// <param name="bindToIp">The bind to ip.</param>
-        public UdpRemoteServer(string bindToIp)
-            : this(IPAddress.Parse(bindToIp))
+        public UdpRemoteServer(int port)
         {
-        }
+            Port = port;
+            Clients = new Dictionary<string, UdpRemoteClient>(255);
+            ServerEndPoint = new IPEndPoint(IPAddress.Any, port);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TcpRemoteServer"/> class.
-        /// </summary>
-        /// <param name="bindToIp">The the ip to bind the server to.</param>
-        /// <param name="port">The port.</param>
-        public UdpRemoteServer(string bindToIp, int port)
-            : this(IPAddress.Parse(bindToIp), port)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TcpRemoteServer"/> class.
-        /// </summary>
-        /// <param name="address">The address to bind to.</param>
-        public UdpRemoteServer(IPAddress address)
-            : this(address, _DEFAULT_PORT)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TcpRemoteServer"/> class.
-        /// </summary>
-        /// <param name="address">The address.</param>
-        /// <param name="port">The port.</param>
-        public UdpRemoteServer(IPAddress address, int port)
-        {
-            Clients = new List<UdpRemoteClient>(255);
-            IpEnd = new IPEndPoint(address, port);
-
-            //TODO: Support IPv6
-            mListener = new UdpClient(AddressFamily.InterNetwork);
+            mListener = new UdpClient(port);
         }
 
 
@@ -112,27 +83,47 @@ namespace RemoteLib.Net.UDP
         /// </summary>
         public void Start()
         {
-            LocalIP = IpEnd.Address;
+            LocalIP = ServerEndPoint.Address;
 
             if (_shuttingDown)
                 throw new AccessViolationException(
                     "Server is already running. You must call stop before calling start again.");
-            
-            //mListener.Listen(1000);
+
+            // Size of our PacketInit packet //
             mListener.BeginReceive(Callback, null);
         }
 
         void Callback(IAsyncResult result)
         {
-
             UdpRemoteClient client = null;
             try
             {
-                var endpoint = IpEnd;
-                var socket = mListener.EndReceive(result, ref endpoint);
-                client = new UdpRemoteClient(socket);
-                Clients.Add(client);
-                client.StartClient();
+                IPEndPoint point = ServerEndPoint;
+                byte[] data = mListener.EndReceive(result, ref point);
+
+                if (data.Length == 512)
+                {
+
+                    // PacketInit packetID //
+                    if (data[0] == 0x00)
+                    {
+                        client = new UdpRemoteClient(point);
+                        Clients.Add(point.ToString(), client);
+                        client.StartClient();
+                    }
+                    else
+                    {
+                        client = Clients[point.ToString()];
+                        if (client == null)
+                            return;
+
+                        client.LoadPacket(data);
+                        byte id = data[0];
+                        Packet p = Packet.GetPacket(id);
+                        p.ReadPacket(client);
+                        Packet.OnPacketRecieved(client, p);
+                    }
+                }
             }
             catch (Exception)
             {
@@ -142,10 +133,10 @@ namespace RemoteLib.Net.UDP
                 }
             }
 
-            if (!_shuttingDown)
-                mListener.BeginAccept(Callback, null);
+            if (_shuttingDown) return;
 
-
+            // Size of our PacketInit packet //
+            mListener.BeginReceive(Callback, null);
         }
 
 

@@ -6,16 +6,11 @@ namespace RemoteLib.Net.Packets
     public class PacketPing : Packet
     {
 
-        public override byte PacketID { get { return 0x00; } }
+        public override byte PacketId { get { return 0x02; } }
 
-        public override void ReadPacket(Socket c) { }
+        public override void ReadPacket(RemoteClient c) { }
 
-        public override void WritePacket() { }
+        public override void WritePacket(RemoteClient c) { }
 
-
-        public override byte[] DataWritten
-        {
-            get { return new byte[0]; }
-        }
     }
 }

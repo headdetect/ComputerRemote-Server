@@ -5,21 +5,16 @@ namespace CLI.Packets
 {
     public class PacketBeep : Packet
     {
-        public override byte PacketID
+        public override byte PacketId
         {
             get { return 0x06; }
         }
 
-        public override byte[] DataWritten
-        {
-            get { return new byte[0]; }
-        }
-
-        public override void ReadPacket(Socket c)
+        public override void ReadPacket(RemoteClient c)
         {
         }
 
-        public override void WritePacket()
+        public override void WritePacket(RemoteClient c)
         {
         }
     }

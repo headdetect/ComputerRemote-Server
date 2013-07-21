@@ -25,10 +25,9 @@ namespace RemoteLib.Net
         static Packet()
         {
 
-            PacketTypes[0] = typeof(PacketPing);
+            PacketTypes[2] = typeof(PacketPing);
             PacketTypes[1] = typeof(PacketDisconnect);
-            PacketTypes[2] = typeof(PacketInit);
-
+            PacketTypes[0] = typeof(PacketInit);
         }
 
         /// <summary>
@@ -37,7 +36,7 @@ namespace RemoteLib.Net
         /// <param name="packet">The packet.</param>
         public static void RegisterPacket(Packet packet)
         {
-            RegisterPacket(packet.GetType(), packet.PacketID);
+            RegisterPacket(packet.GetType(), packet.PacketId);
         }
 
         /// <summary>
@@ -102,53 +101,38 @@ namespace RemoteLib.Net
         #region Inherited
 
         /// <summary>
-        /// Gets the packet ID (must be 4 - 254).
+        /// Gets the packet ID (must be 3 - 255).
         /// </summary>
-        public abstract byte PacketID { get; }
-
-        /// <summary>
-        /// Gets the data written. If is a read-only packet, just return "null"
-        /// </summary>
-        public abstract byte[] DataWritten { get; }
-
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this instance is a server packet.
-        /// </summary>
-        /// <value>
-        /// 	<c>true</c> if this instance is a server packet; otherwise, <c>false</c>.
-        /// </value>
-        protected bool IsServerPacket { get; set; }
+        public abstract byte PacketId { get; }
 
         /// <summary>
         /// Reads the packet. The "Data" property MUST be set or problems will occur.
         /// </summary>
         /// <param name="c">The client stream to read from.</param>
-        public abstract void ReadPacket(Socket c);
+        public abstract void ReadPacket(RemoteClient c);
 
 
         /// <summary>
         /// Writes the packet to the client stream.
         /// </summary>
-        public abstract void WritePacket();
+        /// <remarks>This is where you would actually write data to the stream</remarks>
+        public abstract void WritePacket(RemoteClient c);
+
         #endregion
 
         /// <summary>
         /// Gets an empty packet, usually a packet to be filled with data.
         /// </summary>
         /// <param name="pId">The p id.</param>
-        /// <param name="isServer">if set to <c>true</c> is a server sent packet.</param>
         /// <returns></returns>
-        public static Packet GetPacket(int pId, bool isServer = true)
+        public static Packet GetPacket(byte pId)
         {
-            byte id = (byte)pId;
-            Type t = PacketTypes[id];
+            Type t = PacketTypes[pId];
             if (t == null)
             {
                 return null;
             }
-            Packet p = (Packet)Activator.CreateInstance(PacketTypes[(byte)pId]);
-            p.IsServerPacket = isServer;
+            Packet p = (Packet)Activator.CreateInstance(PacketTypes[pId]);
             return p;
         }
 
@@ -156,19 +140,19 @@ namespace RemoteLib.Net
 
         #region Event Handlers
 
-        internal static void OnPacketRecieved(Packet p)
+        internal static void OnPacketRecieved(RemoteClient c, Packet p)
         {
             if (PacketRecieved != null)
             {
-                PacketRecieved(null, new PacketEventArgs(p));
+                PacketRecieved(null, new PacketEventArgs(c, p));
             }
         }
 
-        internal static void OnPacketSent(Packet p)
+        internal static void OnPacketSent(RemoteClient c, Packet p)
         {
             if (PacketSent != null)
             {
-                PacketSent(null, new PacketEventArgs(p));
+                PacketSent(null, new PacketEventArgs(c, p));
             }
         }
 
@@ -196,11 +180,21 @@ namespace RemoteLib.Net
             public Packet Packet { get; set; }
 
             /// <summary>
+            /// Gets or sets the remote client.
+            /// </summary>
+            /// <value>
+            /// The remote client.
+            /// </value>
+            public RemoteClient RemoteClient { get; set; }
+
+            /// <summary>
             /// Initializes a new instance of the <see cref="PacketEventArgs"/> class.
             /// </summary>
+            /// <param name="client">The client</param>
             /// <param name="packet">The packet.</param>
-            public PacketEventArgs(Packet packet)
+            public PacketEventArgs(RemoteClient client, Packet packet)
             {
+                RemoteClient = client;
                 Packet = packet;
             }
         }

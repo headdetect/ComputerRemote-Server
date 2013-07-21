@@ -19,7 +19,7 @@ namespace TVRemoteGUI.Windows {
 
         private TcpRemoteServer _server;
         private Multicast _castServer;
-        private TcpRemoteClient _client;
+        private RemoteClient _client;
 
         public VideoWindow () {
 
@@ -41,7 +41,7 @@ namespace TVRemoteGUI.Windows {
             }
 
             if ( _client != null ) {
-                _client.PacketQueue.Enqueue ( new PacketVideo ( args.Video ) );
+                _client.PacketWriter.EnqueuePacket ( new PacketVideo ( args.Video ) );
             }
 
 
@@ -77,8 +77,8 @@ namespace TVRemoteGUI.Windows {
             Logger.Log ( "Server Started (" + _server.LocalIP.ToString () + ")" );
 
 
-            TcpRemoteClient.ClientJoined += Client_ClientJoined;
-            TcpRemoteClient.ClientLeft += Client_ClientLeft;
+            RemoteClient.ClientJoined += Client_ClientJoined;
+            RemoteClient.ClientLeft += Client_ClientLeft;
 
             _castServer = new Multicast ();
             _castServer.BeginCast();
@@ -130,7 +130,7 @@ namespace TVRemoteGUI.Windows {
                                     _defaultContent = Content;
                                 }
 
-                                if ( Content == mPlayer ) {
+                                if ( mPlayer.Equals(Content) ) {
                                     this.Background = Brushes.Transparent;
                                     this.Content = _defaultContent;
                                 } else {
@@ -155,24 +155,25 @@ namespace TVRemoteGUI.Windows {
             }
         }
 
-        void Client_ClientLeft(object sender, TcpRemoteClient.TcpClientConnectionEventArgs e)
+        void Client_ClientLeft(object sender, ClientConnectionEventArgs e)
         {
-            if ( e.TcpRemoteClient == _client ) {
+            if ( e.RemoteClient == _client ) {
                 _client = null;
             }
 
             Logger.Log ( "Client disconnected" );
         }
 
-        void Client_ClientJoined(object sender, TcpRemoteClient.TcpClientConnectionEventArgs e)
+        void Client_ClientJoined(object sender, ClientConnectionEventArgs e)
         {
             if ( _client == null ) {
-                _client = e.TcpRemoteClient;
+                _client = e.RemoteClient;
             } else {
-                e.TcpRemoteClient.Disconnect();
+                e.RemoteClient.Disconnect();
                 return;
             }
-            Logger.Log("Client connected (" + ((IPEndPoint)e.TcpRemoteClient.TcpClient.Client.RemoteEndPoint).Address + ")");
+            //TODO: fix
+            //Logger.Log("Client connected (" + ((IPEndPoint)e.TcpRemoteClient.TcpClient.Client.RemoteEndPoint).Address + ")");
         }
     }
 

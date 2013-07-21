@@ -47,9 +47,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Net\PacketWriter.cs" />
+    <Compile Include="Net\RemoteClient.cs" />
+    <Compile Include="Net\IOOperations.cs" />
+    <Compile Include="Net\StreamedRemoteClient.cs" />
     <Compile Include="Net\TCP\TCPRemoteClient.cs" />
-    <Compile Include="Net\UDP\UDPRemoteClient.cs" />
-    <Compile Include="Net\UDP\UDPRemoteServer.cs" />
+    <Compile Include="Net\UDP\UdpPacketReader.cs" />
+    <Compile Include="Net\UDP\UdpPacketWriter.cs" />
+    <Compile Include="Net\UDP\UdpRemoteClient.cs" />
+    <Compile Include="Net\UDP\UdpRemoteServer.cs" />
     <Compile Include="Utils\Configuration.cs" />
     <Compile Include="Utils\Multicast.cs" />
     <Compile Include="Net\Packet.cs" />

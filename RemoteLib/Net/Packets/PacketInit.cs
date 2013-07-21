@@ -6,31 +6,18 @@ namespace RemoteLib.Net.Packets
 {
     public class PacketInit : Packet
     {
-
-        /// <summary>
-        /// Gets the user agent from the connecting client.
-        /// </summary>
-        public string UserAgent { get; private set; }
-
-        public override byte PacketID
+        public override byte PacketId
         {
-            get { return 0x02; }
+            get { return 0x00; }
         }
 
-        public override void ReadPacket(Socket c)
+        public override void ReadPacket(RemoteClient c)
         {
-            UserAgent = PacketReader.ReadString(c);
         }
 
-        public override void WritePacket()
+        public override void WritePacket(RemoteClient c)
         {
-            throw new IOException("Is a readonly packet");
         }
 
-        //Is readonly packet
-        public override byte[] DataWritten
-        {
-            get { return null; }
-        }
     }
 }

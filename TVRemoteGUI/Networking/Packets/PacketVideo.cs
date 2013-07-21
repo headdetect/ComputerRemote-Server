@@ -24,22 +24,19 @@ namespace TVRemoteGUI.Networking.Packets {
         }
     
 
-        public override byte PacketID {
+        public override byte PacketId {
             get { return 0x09; }
         }
 
-        private byte[] _data;
-        public override byte[] DataWritten {
-            get { return _data; }
+
+        public override void ReadPacket ( RemoteClient c )
+        {
+            VideoID = c.ReadInt();
         }
 
-        public override void ReadPacket ( Socket c ) {
-            VideoID = PacketReader.ReadInt(c);
-        }
-
-        public override void WritePacket () {
-            _data = PacketReader.GetString(Video.Location)
-                    .Concat(PacketReader.GetString(Video.Length.ToString("mm\\:ss"))).ToArray();
+        public override void WritePacket (RemoteClient c) {
+            c.WriteString(Video.Location);
+            c.WriteString(Video.Length.ToString("mm\\:ss"));
         }
     }
 }
