@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Sockets;
 using System.Net;
@@ -46,6 +47,8 @@ namespace RemoteLib.Net.UDP
         public int Port { get; private set; }
 
 
+        private readonly Queue<QueueBlob> readQueue;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="TcpRemoteServer"/> class.
         /// </summary>
@@ -63,7 +66,7 @@ namespace RemoteLib.Net.UDP
             Port = port;
             Clients = new Dictionary<string, UdpRemoteClient>(255);
             ServerEndPoint = new IPEndPoint(IPAddress.Any, port);
-
+            readQueue = new Queue<QueueBlob>();
             mListener = new UdpClient(port);
         }
 
@@ -89,19 +92,22 @@ namespace RemoteLib.Net.UDP
                 throw new AccessViolationException(
                     "Server is already running. You must call stop before calling start again.");
 
-            // Size of our PacketInit packet //
+            new Thread(FlushData).Start();
+
             mListener.BeginReceive(Callback, null);
         }
 
         void Callback(IAsyncResult result)
         {
+            if (String.IsNullOrWhiteSpace(Thread.CurrentThread.Name))
+                Thread.CurrentThread.Name = "ReadCallbackThread";
             UdpRemoteClient client = null;
             try
             {
                 IPEndPoint point = ServerEndPoint;
                 byte[] data = mListener.EndReceive(result, ref point);
 
-                if (data.Length == 512)
+                if (data.Length == 1025)
                 {
 
                     // PacketInit packetID //
@@ -113,15 +119,11 @@ namespace RemoteLib.Net.UDP
                     }
                     else
                     {
-                        client = Clients[point.ToString()];
-                        if (client == null)
-                            return;
-
-                        client.LoadPacket(data);
-                        byte id = data[0];
-                        Packet p = Packet.GetPacket(id);
-                        p.ReadPacket(client);
-                        Packet.OnPacketRecieved(client, p);
+                        var stringy = point.ToString();
+                        if (!String.IsNullOrWhiteSpace(stringy))
+                        {
+                            readQueue.Enqueue(new QueueBlob(point.ToString(), data));
+                        }
                     }
                 }
             }
@@ -140,6 +142,51 @@ namespace RemoteLib.Net.UDP
         }
 
 
+        private void FlushData()
+        {
+            Thread.CurrentThread.Name = "FlushReadQueueThread";
+            while (!_shuttingDown)
+            {
+                if (readQueue.Count <= 0)
+                {
+                    Thread.Sleep(5);
+                    continue;
+                }
+
+                var qBlob = readQueue.Dequeue();
+
+                if (qBlob.Data == null || qBlob.Key == null)
+                    continue;
+
+                var client = Clients[qBlob.Key];
+                if (client == null)
+                    return;
+
+                client.LoadPacket(qBlob.Data);
+                byte id = qBlob.Data[0];
+                Packet p = Packet.GetPacket(id);
+                p.ReadPacket(client);
+                Packet.OnPacketRecieved(client, p);
+            }
+
+        }
+
+        internal struct QueueBlob
+        {
+            internal string Key;
+            internal byte[] Data;
+
+            internal QueueBlob(string key, byte[] data)
+            {
+                Key = key;
+                Data = data;
+            }
+
+        }
+
+
     }
+
+
 }
 

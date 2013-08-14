@@ -30,7 +30,9 @@ namespace RemoteLib.Net.UDP
         public Socket Client { get; private set; }
 
         private byte[] currentPacketRead;
-        private int currentReadIndex = 0;
+
+        // We skip the header //
+        private int currentReadIndex = 1;
 
         private byte[] currentPacketSend = new byte[0];
 
@@ -181,6 +183,7 @@ namespace RemoteLib.Net.UDP
         public void LoadPacket(byte[] bytes)
         {
             currentPacketRead = bytes;
+            currentReadIndex = 1;
         }
 
 
@@ -189,12 +192,14 @@ namespace RemoteLib.Net.UDP
         /// </summary>
         public void SendPacket()
         {
-            byte[] payloadPadded = new byte[512];
+            // Header (1 byte) + Payload (1024 bytes) //
+
+            byte[] payloadPadded = new byte[1025];
 
             if (payloadPadded.Length < currentPacketSend.Length)
             {
                 Disconnect();
-                throw new IOException("Max buffer size exceeded. Max size: 512");
+                throw new IOException("Max buffer size exceeded. Max size: 1025");
             }
 
             Array.Copy(currentPacketSend, payloadPadded, currentPacketSend.Length);

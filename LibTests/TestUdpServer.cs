@@ -30,7 +30,7 @@ namespace LibTests
             Assert.IsNotNull(connectToServerClient);
 
             //Creating Init packet//
-            byte[] data = new byte[512];
+            byte[] data = new byte[1025];
             data[0] = 0x00;
 
             try
@@ -52,7 +52,7 @@ namespace LibTests
 
             try
             {
-                byte[] buffer = new byte[512];
+                byte[] buffer = new byte[1025];
                 connectToServerClient.ReceiveFrom(buffer, ref ipEnd);
                 if (buffer[0] != 0x02)
                 {
