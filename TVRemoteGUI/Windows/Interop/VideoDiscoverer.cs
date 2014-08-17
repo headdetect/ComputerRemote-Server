@@ -68,8 +68,6 @@ namespace TVRemoteGUI.Windows.Interop {
                                 continue;
                             }
 
-
-
                             if ( ( data.dwFileAttributes & FileAttributes.Directory ) != 0 ) {
                                 Start ( fullpath );
                             }

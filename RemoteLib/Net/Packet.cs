@@ -66,6 +66,34 @@ namespace RemoteLib.Net
 
         }
 
+
+        /// <summary>
+        /// Registers the packet.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="id">The id.</param>
+        public static void RegisterPacket(Type type)
+        {
+            int id = ((Packet)Activator.CreateInstance(type)).PacketId;
+            if (id > byte.MaxValue || id < byte.MinValue)
+            {
+                throw new ArgumentOutOfRangeException("id", "Id must be in bounds of byte size (0-254)");
+            }
+
+            if (id >= 0 && id <= 2)
+            {
+                throw new ArgumentException("The specified ID is reserved for the system");
+            }
+
+            if (PacketTypes[id] != null)
+            {
+                throw new ArgumentException("PacketID is already taken, please use a different ID or unregister the current one");
+            }
+
+            PacketTypes[id] = type;
+
+        }
+
         /// <summary>
         /// Unregisters the packet from the system.
         /// </summary>

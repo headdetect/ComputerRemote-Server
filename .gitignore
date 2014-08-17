@@ -7,3 +7,4 @@ TestResults
 *.suo
 _ReSharper.ComputerRemote/*
 /Remoter.sln.DotSettings.user
+Newtonsoft.Json.6.0.4

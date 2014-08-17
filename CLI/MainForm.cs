@@ -16,7 +16,7 @@ namespace CLI
     public partial class MainForm : Form
     {
         private TcpRemoteServer _server;
-        private Multicast _cast;
+        private DeviceDiscovery _cast;
         private WirelessMouse _mouse;
 
         public MainForm()
@@ -33,7 +33,6 @@ namespace CLI
             Packet.RegisterPacket(typeof(PacketBeep), 0x06);
 
             //End register
-
 
 
             Logger.Init();
@@ -53,9 +52,9 @@ namespace CLI
             _mouse = new WirelessMouse();
             _mouse.Start();
 
-            if (!Paramaters.Multicating) return;
+           // if (!Paramaters.Multicating) return;
 
-            _cast = new Multicast();
+            _cast = new DeviceDiscovery();
             _cast.BeginCast();
 
             Logger.Log("Casting server started");
@@ -66,7 +65,7 @@ namespace CLI
             Logger.DeInit();
 
             if (_cast != null)
-                _cast.Stop();
+                _cast.EndCast();
 
             if (_server != null)
                 _server.Stop();
@@ -148,10 +147,8 @@ namespace CLI
 
         void RunCommand(object cmd)
         {
-
             try
             {
-
                 ProcessStartInfo procStartInfo = new ProcessStartInfo("cmd", "/c " + cmd)
                 {
                     RedirectStandardOutput = true,

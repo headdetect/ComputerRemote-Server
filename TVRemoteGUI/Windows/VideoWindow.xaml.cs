@@ -18,7 +18,7 @@ namespace TVRemoteGUI.Windows {
     public partial class VideoWindow {
 
         private TcpRemoteServer _server;
-        private Multicast _castServer;
+        private DeviceDiscovery _castServer;
         private RemoteClient _client;
 
         public VideoWindow () {
@@ -80,7 +80,7 @@ namespace TVRemoteGUI.Windows {
             RemoteClient.ClientJoined += Client_ClientJoined;
             RemoteClient.ClientLeft += Client_ClientLeft;
 
-            _castServer = new Multicast ();
+            _castServer = new DeviceDiscovery ();
             _castServer.BeginCast();
 
             Logger.Log ( "Casting server started" );
@@ -93,7 +93,7 @@ namespace TVRemoteGUI.Windows {
             }
 
             if ( _castServer != null ) {
-                _castServer.Stop ();
+                _castServer.EndCast ();
             }
 
             Logger.DeInit ();
