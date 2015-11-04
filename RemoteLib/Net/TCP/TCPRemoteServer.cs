@@ -14,6 +14,11 @@ namespace RemoteLib.Net.TCP
         private bool _shuttingDown;
 
         /// <summary>
+        /// Gets if the server is running.
+        /// </summary>
+        public bool Running { get; private set; }
+
+        /// <summary>
         /// Gets the clients.
         /// </summary>
         /// <value>
@@ -98,6 +103,7 @@ namespace RemoteLib.Net.TCP
         /// </summary>
         public void Stop()
         {
+            Running = false;
             _shuttingDown = true;
             mListener.Stop();
         }
@@ -107,6 +113,7 @@ namespace RemoteLib.Net.TCP
         /// </summary>
         public void Start()
         {
+            Running = true;
             mListener.Start();
             mListener.BeginAcceptTcpClient(CallBack, null);
             LocalIP = IpEnd.Address;
