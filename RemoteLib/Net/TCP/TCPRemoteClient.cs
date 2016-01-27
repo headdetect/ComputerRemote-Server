@@ -15,7 +15,7 @@ namespace RemoteLib.Net.TCP
         /// <value>
         /// The client.
         /// </value>
-        public TcpClient TcpClient { get; private set; }
+        public TcpClient TcpClient { get; }
 
 
         /// <summary>
