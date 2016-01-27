@@ -54,8 +54,8 @@ namespace CLI
 
            // if (!Paramaters.Multicating) return;
 
-            _cast = new DeviceDiscovery();
-            _cast.BeginCast();
+            //_cast = new DeviceDiscovery();
+            //_cast.BeginCast();
 
             Logger.Log("Casting server started");
         }

@@ -110,7 +110,8 @@ namespace RemoteLib.Net
         /// <returns></returns>
         public static int ReadInt(byte[] bytes, int start)
         {
-            return BitConverter.ToInt32(bytes, start);
+			Array.Reverse(bytes);
+			return BitConverter.ToInt32(bytes, start);
         }
 
         /// <summary>
@@ -246,7 +247,9 @@ namespace RemoteLib.Net
             int len = ReadInt(mStream);
 
             byte[] bytes = new byte[len];
+
             mStream.Read(bytes, start, len);
+
             return Encoding.UTF8.GetString(bytes).Trim();
         }
 
