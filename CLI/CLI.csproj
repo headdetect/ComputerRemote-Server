@@ -6,7 +6,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{DD76CA75-2A9C-400C-85C1-99F21CA98CB1}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CLI</RootNamespace>
     <AssemblyName>CLI</AssemblyName>
@@ -53,15 +53,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cursor.cs" />
-    <Compile Include="MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Packets\PacketBeep.cs" />
     <Compile Include="Packets\PacketCommand.cs" />
     <Compile Include="Packets\PacketMessage.cs" />
+    <Compile Include="Utils\Colors.cs" />
     <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Utils\Paramaters.cs" />
@@ -77,11 +72,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

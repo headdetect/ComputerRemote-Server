@@ -110,7 +110,6 @@ namespace RemoteLib.Net
         /// <returns></returns>
         public static int ReadInt(byte[] bytes, int start)
         {
-			Array.Reverse(bytes);
 			return BitConverter.ToInt32(bytes, start);
         }
 
@@ -118,7 +117,7 @@ namespace RemoteLib.Net
         /// Reads an integer from the specified byte array.
         /// </summary>
         /// <param name="bytes">The bytes.</param>
-        /// /// <param name="start">Starting index to read bytes</param>
+        /// <param name="start">Starting index to read bytes</param>
         /// <returns></returns>
         public static double ReadDouble(byte[] bytes, int start)
         {

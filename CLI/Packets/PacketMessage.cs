@@ -19,7 +19,7 @@ namespace CLI.Packets
         /// </summary>
         public PacketMessage()
         {
-            this.Message = "";
+            Message = string.Empty;
         }
 
         /// <summary>
@@ -28,15 +28,12 @@ namespace CLI.Packets
         /// <param name="message">The message.</param>
         public PacketMessage(string message)
         {
-            this.Message = message;
+            Message = message;
         }
 
         #region Inhereted Memebers
 
-        public override byte PacketId
-        {
-            get { return 0x04; }
-        }
+        public override byte PacketId => 0x04;
 
         public override void ReadPacket(RemoteClient c)
         {

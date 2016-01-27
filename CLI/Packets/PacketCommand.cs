@@ -11,15 +11,18 @@ namespace CLI.Packets {
 
         public string Result { get; set; }
 
-        public PacketCommand ( string result ) {
+        public PacketCommand ( string result, string command)
+        {
             Result = result;
+            Command = command;
         }
 
-        public PacketCommand () { }
-
-        public override byte PacketId {
-            get { return 0x01; }
+        public PacketCommand (string command)
+        {
+            Command = command;
         }
+
+        public override byte PacketId => 0x01;
 
         public override void ReadPacket ( RemoteClient c )
         {
